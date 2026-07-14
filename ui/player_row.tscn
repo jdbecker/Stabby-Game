@@ -1,0 +1,61 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/player_row.gd" id="1"]
+
+[node name="PlayerRow" type="PanelContainer"]
+script = ExtResource("1")
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="GiveDagger" type="Button" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "give"
+
+[node name="Info" type="Label" parent="Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+
+[node name="Wounds" type="Label" parent="Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="WoundType" type="OptionButton" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 5
+popup/item_0/text = "BLUE"
+popup/item_0/id = 1
+popup/item_1/text = "RED"
+popup/item_1/id = 2
+popup/item_2/text = "RANK"
+popup/item_2/id = 3
+popup/item_3/text = "ANY"
+popup/item_3/id = 4
+popup/item_4/text = "UNKNOWN"
+popup/item_4/id = 0
+
+[node name="Add" type="Button" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add"
+
+[node name="Remove" type="Button" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Remove"
+
+[node name="Capture" type="Button" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "capture"
+
+[node name="Clear" type="Button" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "clear"

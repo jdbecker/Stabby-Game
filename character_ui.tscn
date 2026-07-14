@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cms2hf1d68lnd"]
+
+[ext_resource type="Script" uid="uid://cd41xd1hn2cg0" path="res://character_ui.gd" id="1_yawyt"]
+
+[node name="CharacterUI" type="Node2D" unique_id=1317553755]
+script = ExtResource("1_yawyt")

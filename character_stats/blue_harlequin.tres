@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CharacterStats" format=3 uid="uid://o3ii7ityuit0"]
+
+[ext_resource type="Script" uid="uid://dtvdix2mqehm" path="res://character_stats.gd" id="1_nhov4"]
+
+[resource]
+script = ExtResource("1_nhov4")
+rank = 3
+clan = 1
+metadata/_custom_type_script = "uid://dtvdix2mqehm"
