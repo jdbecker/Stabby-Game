@@ -1,0 +1,34 @@
+name: GUT tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  gut:
+    runs-on: windows-latest
+    env:
+      GODOT_VERSION: 4.7.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot download
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: godot.zip
+          key: godot-${{ env.GODOT_VERSION }}-win64
+
+      - name: Download Godot if needed
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}-stable_win64.zip" -OutFile godot.zip
+
+      - name: Extract Godot
+        run: |
+          Expand-Archive godot.zip -DestinationPath godot -Force
+
+      - name: Run GUT tests
+        run: |
+          & "$PWD\godot\Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe" --headless --path . -s addons/gut/gut_cmdln.gd -gexit
