@@ -7,7 +7,7 @@ on:
 
 jobs:
   gut:
-    runs-on: windows-latest
+    runs-on: ubuntu-slim
     env:
       GODOT_VERSION: 4.7.1
     steps:
@@ -18,17 +18,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: godot.zip
-          key: godot-${{ env.GODOT_VERSION }}-win64
+          key: godot-${{ env.GODOT_VERSION }}-linux
 
       - name: Download Godot if needed
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}-stable_win64.zip" -OutFile godot.zip
+          curl -L -o godot.zip "https://downloads.tuxfamily.org/godotengine/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip"
 
       - name: Extract Godot
         run: |
-          Expand-Archive godot.zip -DestinationPath godot -Force
+          unzip -q godot.zip -d godot
+          chmod +x godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
 
       - name: Run GUT tests
         run: |
-          & "$PWD\godot\Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe" --headless --path . -s addons/gut/gut_cmdln.gd -gexit
+          ./godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --path . -s addons/gut/gut_cmdln.gd -gexit
