@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(\"/c/Program Files/Godot/Godot_v4.6-stable_win64_console.exe\" --headless -s addons/gut/gut_cmdln.gd -gdir=res://test -ginclude_subdirs -gexit)"
-    ]
-  }
-}
