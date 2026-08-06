@@ -7,7 +7,7 @@ on:
 
 jobs:
   gut:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     env:
       GODOT_VERSION: 4.7.1
     steps:
