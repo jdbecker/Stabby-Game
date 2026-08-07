@@ -31,6 +31,18 @@ jobs:
           unzip -q godot.zip -d godot
           chmod +x godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
 
-      - name: Run GUT tests
+      - name: Import Godot project (required for GUT)
+        shell: bash
         run: |
-          ./godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --path . -s addons/gut/gut_cmdln.gd -gexit
+          set -euo pipefail
+          ./godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --path . --import
+
+      - name: Run GUT tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --path . -s addons/gut/gut_cmdln.gd -gexit 2>&1 | tee gut.log
+          if grep -q 'Some GUT class_names have not been imported' gut.log; then
+            echo 'GUT failed because required classes were not imported.'
+            exit 1
+          fi
