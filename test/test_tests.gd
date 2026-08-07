@@ -9,7 +9,7 @@ func test_count_clans():
 	assert_eq(Game.ALL_CHARACTERS.filter(func(c: CharacterStats): return c.clan == CharacterStats.Clan.RED).size(), 9)
 	assert_eq(Game.ALL_CHARACTERS.filter(func(c: CharacterStats): return c.clan == CharacterStats.Clan.BLUE).size(), 9)
 	assert_eq(Game.ALL_CHARACTERS.filter(func(c: CharacterStats): return c.clan == CharacterStats.Clan.PURPLE).size(), 1)
-	assert_eq(Game.BLUE_CHARACTERS.size(), 90)
+	assert_eq(Game.BLUE_CHARACTERS.size(), 9)
 	assert_eq(Game.RED_CHARACTERS.size(), 9)
 
 
