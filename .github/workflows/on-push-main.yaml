@@ -1,4 +1,4 @@
-name: GUT tests
+name: On Push Main
 
 on:
   push:
@@ -45,3 +45,27 @@ jobs:
             echo 'GUT failed because required classes were not imported.'
             exit 1
           fi
+
+      - name: Build Godot project
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p export/html5
+          ./godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --path . --export-release "Web" export/html5/index.html
+
+      - name: Setup Butler
+        # TODO: Setup caching similar to Godot download caching
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L -o butler.zip "https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default"
+          unzip -q butler.zip -d butler
+          chmod +x butler/butler
+
+      - name: Push to itch.io
+        shell: bash
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          set -euo pipefail
+          ./butler/butler push export/html5/ jsonstache/stabby-game:html5
