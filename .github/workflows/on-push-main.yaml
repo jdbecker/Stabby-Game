@@ -6,6 +6,7 @@ on:
       - main
 
 env:
+  GODOT_VERSION: 4.7.1 # If changed, change the image in the container section below as well!
   EXPORT_PATH: export/html5
       
 jobs:
@@ -32,6 +33,12 @@ jobs:
             echo 'GUT failed because required classes were not imported.'
             exit 1
           fi
+
+      - name: Setup export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
       - name: Build Godot project
         shell: bash
