@@ -5,42 +5,29 @@ on:
     branches:
       - main
 
+env:
+  EXPORT_PATH: export/html5
+      
 jobs:
-  gut:
-    runs-on: ubuntu-latest
-    env:
-      GODOT_VERSION: 4.7.1
+  on-push:
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.1-stable
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache Godot download
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: godot.zip
-          key: godot-${{ env.GODOT_VERSION }}-linux
-
-      - name: Download Godot if needed
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          curl -L -o godot.zip "https://downloads.godotengine.org/?version=${{ env.GODOT_VERSION }}&flavor=stable&slug=linux.x86_64.zip&platform=linux.64"
-
-      - name: Extract Godot
-        run: |
-          unzip -q godot.zip -d godot
-          chmod +x godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
-
-      - name: Import Godot project (required for GUT)
+      - name: Import Godot project
+        # required for GUT
         shell: bash
         run: |
           set -euo pipefail
-          ./godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --path . --import
+          godot --headless --path . --import
 
       - name: Run GUT tests
         shell: bash
         run: |
           set -euo pipefail
-          ./godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --path . -s addons/gut/gut_cmdln.gd -gexit 2>&1 | tee gut.log
+          godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit 2>&1 | tee gut.log
           if grep -q 'Some GUT class_names have not been imported' gut.log; then
             echo 'GUT failed because required classes were not imported.'
             exit 1
@@ -50,17 +37,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p export/html5
-          ./godot/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --path . --export-release "Web" export/html5/index.html
-
-      - name: Setup Butler
-        # TODO: Setup caching similar to Godot download caching
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl -L -o butler.zip "https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default"
-          unzip -q butler.zip -d butler
-          chmod +x butler/butler
+          mkdir -p ${EXPORT_PATH}
+          godot --headless --path . --export-release "Web" ${EXPORT_PATH}/index.html
 
       - name: Push to itch.io
         shell: bash
@@ -68,4 +46,4 @@ jobs:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
           set -euo pipefail
-          ./butler/butler push export/html5/ jsonstache/stabby-game:html5
+          butler push ${EXPORT_PATH}/ jsonstache/stabby-game:html5
