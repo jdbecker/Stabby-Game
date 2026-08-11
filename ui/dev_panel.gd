@@ -17,10 +17,13 @@ func _ready() -> void:
 
 
 func _start_new_game() -> void:
+	# cleanup old game
 	if game and game.state_changed.is_connected(_update_summary):
 		game.state_changed.disconnect(_update_summary)
 	for child in _player_list.get_children():
 		child.queue_free()
+
+	# create new game
 	game = Game.new(int(_player_count.value))
 	game.state_changed.connect(_update_summary)
 	for i in game.characters.size():

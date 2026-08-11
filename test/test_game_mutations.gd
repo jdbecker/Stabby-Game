@@ -1,9 +1,10 @@
 extends GutTest
-## Phase 1 sandbox mutations: free dagger movement, validated wounds, capture on 4th.
 
 const RANK := CharacterStats.Wound.RANK
 const RED := CharacterStats.Wound.RED
 const BLUE := CharacterStats.Wound.BLUE
+const UNKNOWN := CharacterStats.Wound.UNKNOWN
+const ANY := CharacterStats.Wound.ANY
 
 
 func test_set_knife_holder_moves_freely():
@@ -19,6 +20,33 @@ func test_suffer_valid_wound_is_taken():
 	game.suffer_wound(c, RED)
 	assert_eq(c.wound_count(), 1)
 	assert_true(RED in c.wounds, "Red wound should have been recorded")
+
+
+func test_inquisitor_can_take_any_wound():
+	var game := Game.new(6)
+	var c := Character.new(Game.INQUISITOR) # valid: RANK, ANY, ANY
+	game.suffer_wound(c, RED)
+	game.suffer_wound(c, BLUE)
+	assert_eq(c.wound_count(), 2)
+	assert_true(RED in c.wounds, "Red wound should have been recorded")
+	assert_true(BLUE in c.wounds, "Blue wound should have been recorded")
+
+
+func test_inquisitor_can_take_duplicate_wounds():
+	var game := Game.new(6)
+	var c := Character.new(Game.INQUISITOR) # valid: RANK, ANY, ANY
+	game.suffer_wound(c, UNKNOWN)
+	game.suffer_wound(c, UNKNOWN)
+	assert_eq(c.wound_count(), 2)
+	assert_eq(c.wounds.filter(func(w): return w == UNKNOWN).size(), 2, "Inquisitor should be able to take duplicate wounds")
+
+
+func test_inquisitor_cannot_take_literal_any_wound():
+	var game := Game.new(6)
+	var c := Character.new(Game.INQUISITOR) # valid: RANK, ANY, ANY
+	game.suffer_wound(c, ANY)
+	assert_eq(c.wound_count(), 0, "Inquisitor should not be able to take literal ANY wound")
+	assert_eq(get_errors().size(), 0, "Rejecting an invalid wound must not push an error")
 
 
 func test_suffer_invalid_wound_is_rejected():

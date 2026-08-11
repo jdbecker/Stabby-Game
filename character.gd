@@ -25,6 +25,7 @@ func take_wound(wound: CharacterStats.Wound) -> void:
 	var remaining_wounds := valid_new_wounds()
 	if wound not in remaining_wounds:
 		push_error("Character %s cannot take wound %s! Valid wounds are %s" % [self, CharacterStats.Wound.keys()[wound], wounds_to_string(remaining_wounds)])
+		return
 	wounds.append(wound)
 
 
@@ -54,11 +55,27 @@ func activate_ability() -> void:
 func valid_new_wounds() -> Array[CharacterStats.Wound]:
 	var valid_wounds := _stats.wounds.duplicate()
 	for wound: CharacterStats.Wound in wounds:
-		var idx := valid_wounds.find(wound)
-		if idx == -1:
+		var any_index := valid_wounds.find(CharacterStats.Wound.ANY)
+		var wound_index := valid_wounds.find(wound)
+		if any_index != -1 and wound in [CharacterStats.Wound.RED, CharacterStats.Wound.BLUE, CharacterStats.Wound.UNKNOWN]:
+			# If the character has a literal RED or BLUE wound, remove an ANY.
+			valid_wounds.remove_at(any_index)
+		elif wound_index != -1:
+			# Remove the wound from the valid list if it exists.
+			valid_wounds.remove_at(wound_index)
+		else:
 			push_error("Character %s somehow has a wound %s which its character type is not allowed! Valid wounds for this character type: %s" % [
 				self, CharacterStats.Wound.keys()[wound], wounds_to_string(_stats.wounds)
 			])
 			continue
-		valid_wounds.remove_at(idx)
-	return valid_wounds
+	
+	var remaining_valid_wounds: Array[CharacterStats.Wound] = []
+	for wound: CharacterStats.Wound in valid_wounds:
+		if wound == CharacterStats.Wound.ANY:
+			# Any records are valid as either clue color, but literal ANY is not.
+			remaining_valid_wounds.append(CharacterStats.Wound.RED)
+			remaining_valid_wounds.append(CharacterStats.Wound.BLUE)
+			remaining_valid_wounds.append(CharacterStats.Wound.UNKNOWN)
+		else:
+			remaining_valid_wounds.append(wound)
+	return remaining_valid_wounds
