@@ -90,9 +90,6 @@ func _init(player_count: int) -> void:
 		characters.append(Character.new(INQUISITOR))
 	assert(characters.size() == player_count, "Couldn't create correct number of characters! Characters: %s" % str(characters))
 	
-	for character in characters:
-		character.pass_knife.connect(func(c: Character): knife_holder = c)
-	
 	knife_holder = characters[randi() % characters.size()]
 
 
