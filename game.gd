@@ -141,3 +141,8 @@ func clear_wounds(c: Character) -> void:
 	c.wounds.clear()
 	c.captured = false
 	state_changed.emit()
+
+
+func give_ability_card(card: AbilityCard, character: Character) -> void:
+	character.ability_cards.append(card)
+	state_changed.emit()

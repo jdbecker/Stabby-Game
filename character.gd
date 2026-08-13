@@ -2,14 +2,15 @@ class_name Character
 extends RefCounted
 ## Dynamic data representing the current state of a character during the course of play
 
-signal pass_knife(to: Character)
-
 var wounds: Array[CharacterStats.Wound] = []
+var unassigned_wounds := 0
+var unassigned_heals := 0
 var captured: bool = false
 # Instead of 2 types of Inquisitors (one for each clue color) we're treating clue color as dynamic
 # data that is set when the character is initialized
 var clue_color: CharacterStats.Clan
 var _stats: CharacterStats
+var ability_cards: Array[AbilityCard] = []
 
 
 func _init(character_stats: CharacterStats) -> void:
@@ -48,8 +49,13 @@ func is_captured() -> bool:
 	return captured
 
 
-func activate_ability() -> void:
-	pass # todo
+func activate_ability(game: Game, ctx: AbilityContext = null) -> void:
+	# Dispatch to the RankAbility strategy for this character's rank.
+	var ability := RankAbility.for_rank(_stats.rank)
+	if ability == null:
+		push_error("No RankAbility available for rank %s" % _stats.rank)
+		return
+	ability.apply(game, self, ctx)
 
 
 func valid_new_wounds() -> Array[CharacterStats.Wound]:
@@ -79,3 +85,39 @@ func valid_new_wounds() -> Array[CharacterStats.Wound]:
 		else:
 			remaining_valid_wounds.append(wound)
 	return remaining_valid_wounds
+
+
+func has_quill() -> bool:
+	return ability_cards.any(func(card: AbilityCard): return card is AbilityCard.Quill)
+
+
+func has_sword() -> bool:
+	return ability_cards.any(func(card: AbilityCard): return card is AbilityCard.Sword)
+
+
+func get_sword() -> AbilityCard.Sword:
+	return ability_cards.filter(func(card: AbilityCard): return card is AbilityCard.Sword).front()
+
+
+func has_shield() -> bool:
+	return ability_cards.any(func(card: AbilityCard): return card is AbilityCard.Shield)
+
+
+func get_shield() -> AbilityCard.Shield:
+	return ability_cards.filter(func(card: AbilityCard): return card is AbilityCard.Shield).front()
+
+
+func has_staff() -> bool:
+	return ability_cards.any(func(card: AbilityCard): return card is AbilityCard.Staff)
+
+
+func has_fan() -> bool:
+	return ability_cards.any(func(card: AbilityCard): return card is AbilityCard.Fan)
+
+
+func has_true_curse() -> bool:
+	return ability_cards.any(func(card: AbilityCard): return card is AbilityCard.TrueCurse)
+
+
+func has_false_curse() -> bool:
+	return ability_cards.any(func(card: AbilityCard): return card is AbilityCard.FalseCurse)
