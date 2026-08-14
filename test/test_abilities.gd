@@ -83,6 +83,33 @@ func test_guardian_gives_unique_shield_if_default_color_exists():
 	assert_eq(sword.color, shield.color)
 	assert_not_same(shield.color, Color.GREEN)
 
+func test_shielded_target_invalid():
+	var game := Game.new(6)
+	var actor := Character.new(Game.BLUE_GUARDIAN)
+	var target: Character = game.characters.front()
+	game.characters.append(actor) # game now has 7 chars
+	game.set_knife_holder(actor)
+	var ctx := AbilityContext.new()
+	ctx.target = target
+	actor.activate_ability(game, ctx)
+	# 2 characters are not valid: shielded and knife holder
+	assert_eq( game.get_valid_stab_targets().size(), game.characters.size() - 2)
+
+func test_shielded_target_valid_when_guardian_wounded():
+	var game := Game.new(6)
+	var actor := Character.new(Game.BLUE_GUARDIAN)
+	var target: Character = game.characters.front()
+	game.characters.append(actor) # game now has 7 chars
+	game.set_knife_holder(actor)
+	var ctx := AbilityContext.new()
+	ctx.target = target
+	actor.activate_ability(game, ctx)
+	game.suffer_wound(actor, CharacterStats.Wound.RANK)
+	game.suffer_wound(actor, CharacterStats.Wound.BLUE)
+	game.suffer_wound(actor, CharacterStats.Wound.BLUE)
+	# 1 character not valid: knife holder
+	assert_eq( game.get_valid_stab_targets().size(), game.characters.size() - 1)
+
 func test_mage_gives_staffs():
 	var game := Game.new(6)
 	var actor := Character.new(Game.BLUE_MAGE)

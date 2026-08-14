@@ -42,7 +42,7 @@ func can_intervene() -> bool:
 
 
 func wound_count() -> int:
-	return wounds.size()
+	return wounds.size() + unassigned_wounds - unassigned_heals
 
 
 func is_captured() -> bool:

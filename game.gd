@@ -101,6 +101,28 @@ func get_other_characters(...exclude_characters: Array) -> Array[Character]:
 	return other_characters
 
 
+func get_valid_stab_targets() -> Array[Character]:
+	return get_other_characters(knife_holder).filter(func(character: Character):
+		# filter-out shielded characters with guardian not-fully wounded
+		return not (
+			character.has_shield() and
+			self.has_character_with_matching_sword(character.get_shield().color) and
+			self.get_character_with_matching_sword(character.get_shield().color).wound_count() < 3)
+	)
+
+
+func has_character_with_matching_sword(color: Color) -> bool:
+	return characters.any(func(char: Character): 
+		return char.has_sword() and char.get_sword().color == color
+	)
+
+
+func get_character_with_matching_sword(color: Color) -> Character:
+	return characters.filter(func(char: Character):
+		return char.has_sword() and char.get_sword().color == color
+	).front()
+
+
 func _set_stab_target(target: Character) -> void:
 	intervention_offers = [] # clear intervention offers when target changes
 	stab_target = target
