@@ -72,10 +72,16 @@ func valid_new_wounds() -> Array[CharacterStats.Wound]:
 	var valid_wounds := _stats.wounds.duplicate()
 	for wound: CharacterStats.Wound in wounds:
 		var any_index := valid_wounds.find(CharacterStats.Wound.ANY)
+		var color_index := valid_wounds.find_custom(func(w: CharacterStats.Wound):
+			return w in [CharacterStats.Wound.RED, CharacterStats.Wound.BLUE]
+		)
 		var wound_index := valid_wounds.find(wound)
 		if any_index != -1 and wound in [CharacterStats.Wound.RED, CharacterStats.Wound.BLUE, CharacterStats.Wound.UNKNOWN]:
 			# If the character has a literal RED or BLUE wound, remove an ANY.
 			valid_wounds.remove_at(any_index)
+		elif color_index != -1 and has_staff() and wound == CharacterStats.Wound.UNKNOWN:
+			# Remove a color wound if character has staff and UNKNOWN wound
+			valid_wounds.remove_at(color_index)
 		elif wound_index != -1:
 			# Remove the wound from the valid list if it exists.
 			valid_wounds.remove_at(wound_index)
@@ -91,6 +97,8 @@ func valid_new_wounds() -> Array[CharacterStats.Wound]:
 			# Any records are valid as either clue color, but literal ANY is not.
 			remaining_valid_wounds.append(CharacterStats.Wound.RED)
 			remaining_valid_wounds.append(CharacterStats.Wound.BLUE)
+			remaining_valid_wounds.append(CharacterStats.Wound.UNKNOWN)
+		elif has_staff() and wound in [CharacterStats.Wound.RED, CharacterStats.Wound.BLUE]:
 			remaining_valid_wounds.append(CharacterStats.Wound.UNKNOWN)
 		else:
 			remaining_valid_wounds.append(wound)

@@ -121,6 +121,27 @@ func test_mage_gives_staffs():
 	assert_true(actor.has_staff())
 	assert_true(target.has_staff())
 
+func test_staff_sets_valid_wounds_unknown():
+	var game := Game.new(6)
+	var actor := Character.new(Game.BLUE_MAGE)
+	var red_elder := Character.new(Game.RED_ELDER)
+	assert_eq(red_elder.valid_new_wounds(), [CharacterStats.Wound.RANK, CharacterStats.Wound.RED, CharacterStats.Wound.RED])
+	var ctx := AbilityContext.new()
+	ctx.target = red_elder
+	actor.activate_ability(game, ctx)
+	assert_eq(red_elder.valid_new_wounds(), [CharacterStats.Wound.RANK, CharacterStats.Wound.UNKNOWN, CharacterStats.Wound.UNKNOWN])
+
+func test_staff_already_having_color_wound_doesnt_break():
+	var game := Game.new(6)
+	var actor := Character.new(Game.BLUE_MAGE)
+	var red_elder := Character.new(Game.RED_ELDER)
+	game.suffer_wound(red_elder, CharacterStats.Wound.RED)
+	assert_eq(red_elder.valid_new_wounds(), [CharacterStats.Wound.RANK, CharacterStats.Wound.RED])
+	var ctx := AbilityContext.new()
+	ctx.target = red_elder
+	actor.activate_ability(game, ctx)
+	assert_eq(red_elder.valid_new_wounds(), [CharacterStats.Wound.RANK, CharacterStats.Wound.UNKNOWN])
+
 func test_courtesan_gives_fan():
 	var game := Game.new(6)
 	var actor := Character.new(Game.BLUE_COURTESAN)

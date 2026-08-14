@@ -141,6 +141,7 @@ func suffer_wound(c: Character, wound: CharacterStats.Wound) -> void:
 		state_changed.emit()
 		return
 	if wound not in c.valid_new_wounds():
+		push_error("%s not in valid wounds for character %s: %s" % [wound, c, c.valid_new_wounds()])
 		return
 	c.take_wound(wound)
 	state_changed.emit()

@@ -45,16 +45,20 @@ func test_inquisitor_cannot_take_literal_any_wound():
 	var game := Game.new(6)
 	var c := Character.new(Game.INQUISITOR) # valid: RANK, ANY, ANY
 	game.suffer_wound(c, ANY)
+	var errors := get_errors()
 	assert_eq(c.wound_count(), 0, "Inquisitor should not be able to take literal ANY wound")
-	assert_eq(get_errors().size(), 0, "Rejecting an invalid wound must not push an error")
+	assert_eq(errors.size(), 1, "Rejecting an invalid wound must push an error")
+	handle_errors(errors)
 
 
 func test_suffer_invalid_wound_is_rejected():
 	var game := Game.new(6)
 	var c := Character.new(Game.RED_ELDER) # cannot take BLUE
 	game.suffer_wound(c, BLUE)
+	var errors := get_errors()
 	assert_eq(c.wound_count(), 0, "Invalid wound must not be recorded")
-	assert_eq(get_errors().size(), 0, "Rejecting an invalid wound must not push an error")
+	assert_eq(errors.size(), 1, "Rejecting an invalid wound must push an error")
+	handle_errors(errors)
 
 
 func test_fourth_wound_captures_without_extra_token():
@@ -111,3 +115,6 @@ func test_state_changed_emitted_on_mutation():
 	var c := Character.new(Game.RED_ELDER)
 	game.suffer_wound(c, RED)
 	assert_signal_emit_count(game, "state_changed", 2)
+
+func handle_errors(errors: Array) -> void:
+	errors.map(func(error: GutTrackedError): error.handled = true)
