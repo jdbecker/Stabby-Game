@@ -130,12 +130,31 @@ func test_courtesan_gives_fan():
 	actor.activate_ability(game, ctx)
 	assert_true(target.has_fan())
 
-func test_elder_gives_quill():
+func test_no_quill_low_number_leader():
 	var game := Game.new(6)
-	var actor := Character.new(Game.BLUE_ELDER)
-	var ctx := AbilityContext.new()
-	actor.activate_ability(game, ctx)
-	assert_true(actor.has_quill())
+	var red_leader := Character.new(Game.RED_ELDER)
+	var red_follower_1 := Character.new(Game.RED_ASSASSIN)
+	var red_follower_2 := Character.new(Game.RED_HARLEQUIN)
+	var blue_leader := Character.new(Game.BLUE_BERSERKER)
+	var blue_follower_1 := Character.new(Game.BLUE_MAGE)
+	var blue_follower_2 := Character.new(Game.BLUE_COURTESAN)
+	game.characters = [red_leader, red_follower_1, red_follower_2, blue_leader, blue_follower_1, blue_follower_2]
+	assert_eq(game.clan_leader(CharacterStats.Clan.RED), red_leader)
+	assert_eq(game.clan_leader(CharacterStats.Clan.BLUE), blue_leader)
+
+func test_elder_makes_last_rank_leader():
+	var game := Game.new(6)
+	var red_leader := Character.new(Game.RED_ELDER)
+	var red_follower_1 := Character.new(Game.RED_ASSASSIN)
+	var red_follower_2 := Character.new(Game.RED_HARLEQUIN)
+	var blue_leader := Character.new(Game.BLUE_ELDER)
+	var blue_follower_1 := Character.new(Game.BLUE_MAGE)
+	var blue_follower_2 := Character.new(Game.BLUE_COURTESAN)
+	game.characters = [red_leader, red_follower_1, red_follower_2, blue_leader, blue_follower_1, blue_follower_2]
+	red_leader.activate_ability(game)
+	blue_leader.activate_ability(game)
+	assert_eq(game.clan_leader(CharacterStats.Clan.RED), red_follower_2)
+	assert_eq(game.clan_leader(CharacterStats.Clan.BLUE), blue_follower_2)
 
 func test_alchemist_intervention_heal():
 	var game := Game.new(6)

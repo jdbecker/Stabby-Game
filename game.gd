@@ -165,3 +165,13 @@ func clear_wounds(c: Character) -> void:
 func give_ability_card(card: AbilityCard, character: Character) -> void:
 	character.ability_cards.append(card)
 	state_changed.emit()
+
+
+func clan_leader(clan: CharacterStats.Clan) -> Character:
+	var clan_chars := characters.filter(func(character: Character): return character.clan == clan)
+	clan_chars.sort_custom(func(a: Character, b: Character): return a.rank < b.rank)
+	var maybe_leader: Character = clan_chars.front()
+	if maybe_leader.has_quill():
+		return clan_chars.back()
+	else:
+		return maybe_leader

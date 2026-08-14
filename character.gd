@@ -9,6 +9,8 @@ var captured: bool = false
 # Instead of 2 types of Inquisitors (one for each clue color) we're treating clue color as dynamic
 # data that is set when the character is initialized
 var clue_color: CharacterStats.Clan
+var rank: CharacterStats.Rank : get = _get_rank # retrievable but immutable
+var clan: CharacterStats.Clan : get = _get_clan
 var _stats: CharacterStats
 var ability_cards: Array[AbilityCard] = []
 
@@ -20,6 +22,14 @@ func _init(character_stats: CharacterStats) -> void:
 
 func _to_string() -> String:
 	return "<%s %s>" % [CharacterStats.Clan.keys()[_stats.clan], CharacterStats.Rank.keys()[_stats.rank]]
+
+
+func _get_rank() -> CharacterStats.Rank:
+	return _stats.rank
+
+
+func _get_clan() -> CharacterStats.Clan:
+	return _stats.clan
 
 
 func take_wound(wound: CharacterStats.Wound) -> void:
