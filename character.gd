@@ -5,12 +5,13 @@ extends RefCounted
 var wounds: Array[CharacterStats.Wound] = []
 var unassigned_wounds := 0
 var unassigned_heals := 0
+var ability_available: bool = false
 var captured: bool = false
 # Instead of 2 types of Inquisitors (one for each clue color) we're treating clue color as dynamic
 # data that is set when the character is initialized
 var clue_color: CharacterStats.Clan
-var rank: CharacterStats.Rank : get = _get_rank # retrievable but immutable
-var clan: CharacterStats.Clan : get = _get_clan
+var rank: CharacterStats.Rank: get = _get_rank # retrievable but immutable
+var clan: CharacterStats.Clan: get = _get_clan
 var _stats: CharacterStats
 var ability_cards: Array[AbilityCard] = []
 
@@ -38,6 +39,8 @@ func take_wound(wound: CharacterStats.Wound) -> void:
 		push_error("Character %s cannot take wound %s! Valid wounds are %s" % [self, CharacterStats.Wound.keys()[wound], wounds_to_string(remaining_wounds)])
 		return
 	wounds.append(wound)
+	if wound == CharacterStats.Wound.RANK:
+		ability_available = true
 
 
 func wounds_to_string(wounds_array: Array[CharacterStats.Wound]) -> String:
@@ -66,6 +69,7 @@ func activate_ability(game: Game, ctx: AbilityContext = null) -> void:
 		push_error("No RankAbility available for rank %s" % _stats.rank)
 		return
 	ability.apply(game, self, ctx)
+	ability_available = false
 
 
 func valid_new_wounds() -> Array[CharacterStats.Wound]:
