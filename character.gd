@@ -5,7 +5,7 @@ extends RefCounted
 var wounds: Array[CharacterStats.Wound] = []
 var unassigned_wounds: Array[WoundContext] = []
 var unassigned_heals := 0
-var ability_available: bool : get = _get_ability_available
+var ability_available: bool: get = _get_ability_available
 var last_wound: WoundContext
 var is_captured: bool = false
 # Instead of 2 types of Inquisitors (one for each clue color) we're treating clue color as dynamic
@@ -35,6 +35,8 @@ func _get_clan() -> CharacterStats.Clan:
 
 
 func _get_ability_available() -> bool:
+	if last_wound == null:
+		return false
 	if last_wound.wound_type == CharacterStats.Wound.RANK and not last_wound.block_ability:
 		if rank == CharacterStats.Rank.ALCHEMIST:
 			return last_wound.intervened_for != null
@@ -82,7 +84,6 @@ func activate_ability(game: Game, ctx: AbilityContext = null) -> void:
 		push_error("No RankAbility available for rank %s" % _stats.rank)
 		return
 	ability.apply(game, self, ctx)
-	ability_available = false
 
 
 func valid_new_wounds() -> Array[CharacterStats.Wound]:

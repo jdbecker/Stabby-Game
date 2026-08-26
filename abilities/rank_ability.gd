@@ -68,6 +68,9 @@ class MentalistAbility:
 class BerserkerAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
+		if actor.last_wound == null:
+			push_error("Berserker's last_wound is missing!")
+			return
 		var target := actor.last_wound.attacker
 		if target == null:
 			push_error("Berserker's last attacker is missing from last_wound!")
@@ -120,9 +123,13 @@ class AlchemistAbility:
 		if context == null:
 			push_error("Alchemist ability requires context")
 			return
+		if actor.last_wound == null:
+			push_error("Alchemist last_wound is missing!")
+			return
 		var target := actor.last_wound.intervened_for
 		if target == null:
 			push_error("Alchemist ability can't be activated without intervened_for in last_wound!")
+			return
 		if context.heal:
 			target.unassigned_heals += 1
 		else:
@@ -134,7 +141,7 @@ class HarlequinAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
 		for target in context.targets:
-			pass #TODO: when UI is done, reveal target info to actor player
+			pass # TODO: when UI is done, reveal target info to actor player
 
 class InquisitorAbility:
 	extends RankAbility
