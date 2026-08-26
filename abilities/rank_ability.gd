@@ -39,42 +39,42 @@ func apply(game: Game, actor: Character, context: AbilityContext) -> void:
 func _give_ability_card(game: Game, card: AbilityCard, character: Character) -> void:
 	game.give_ability_card(card, character)
 
-# Assassin: two suffer_wound(target) + set_knife_holder(target)
 class AssassinAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
 		if context == null or context.target == null:
 			push_error("Assassin requires a target")
 			return
-		context.target.unassigned_wounds += 2
+		var first_wound := WoundContext.new(actor)
+		first_wound.block_ability = true
+		context.target.unassigned_wounds.append(first_wound)
+		var second_wound := WoundContext.new(actor)
+		second_wound.block_ability = true
+		context.target.unassigned_wounds.append(second_wound)
 		game.set_knife_holder(context.target)
 
-# Mentalist: rank wound + dagger
 class MentalistAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
 		if context == null or context.target == null:
 			push_error("Mentalist requires a target")
 			return
-		# Prefer RANK; fall back to any available wound
-		var preferred := CharacterStats.Wound.RANK
-		var choices := context.target.valid_new_wounds()
-		if preferred in choices:
-			game.suffer_wound(context.target, preferred)
-		else:
-			context.target.unassigned_wounds += 1
+		var wound_context := WoundContext.new(actor)
+		wound_context.block_ability = true
+		wound_context.force_rank = true
+		context.target.unassigned_wounds.append(wound_context)
 		game.set_knife_holder(context.target)
 
-# Berserker: wound attacker (context.target expected to be attacker)
 class BerserkerAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
-		if context == null or context.target == null:
-			# nothing to do without attacker information
-			return
-		context.target.unassigned_wounds += 1
+		var target := actor.last_wound.attacker
+		if target == null:
+			push_error("Berserker's last attacker is missing from last_wound!")
+		var wound_context := WoundContext.new(actor)
+		wound_context.block_ability = true
+		actor.last_wound.attacker.unassigned_wounds.append(wound_context)
 
-# Guardian: give Shield to target and take a Sword for actor
 class GuardianAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
@@ -92,7 +92,6 @@ class GuardianAbility:
 			_give_ability_card(game, AbilityCard.Sword.new(Color.GREEN), actor)
 			_give_ability_card(game, AbilityCard.Shield.new(Color.GREEN), context.target)
 
-# Mage: give a Staff to target and to actor
 class MageAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
@@ -102,7 +101,6 @@ class MageAbility:
 		_give_ability_card(game, AbilityCard.Staff.new(), context.target)
 		_give_ability_card(game, AbilityCard.Staff.new(), actor)
 
-# Courtesan: give Fan to target
 class CourtesanAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
@@ -111,32 +109,33 @@ class CourtesanAbility:
 			return
 		_give_ability_card(game, AbilityCard.Fan.new(), context.target)
 
-# Elder: receive Quill
 class ElderAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
 		_give_ability_card(game, AbilityCard.Quill.new(), actor)
 
-# Alchemist: can only be used in intervention; wound or heal 1
 class AlchemistAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
-		if context == null or not context.intervention or context.target == null:
-			push_error("Alchemist ability requires an intervention context and a target")
+		if context == null:
+			push_error("Alchemist ability requires context")
 			return
+		var target := actor.last_wound.intervened_for
+		if target == null:
+			push_error("Alchemist ability can't be activated without intervened_for in last_wound!")
 		if context.heal:
-			context.target.unassigned_heals += 1
+			target.unassigned_heals += 1
 		else:
-			context.target.unassigned_wounds += 1
+			var wound_context := WoundContext.new(actor)
+			wound_context.block_ability = true
+			target.unassigned_wounds.append(wound_context)
 
-# Harlequin: reveal-only / no-op (viewing handled by UI)
 class HarlequinAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
-		# no state mutation for reveal-only ability
-		pass
+		for target in context.targets:
+			pass #TODO: when UI is done, reveal target info to actor player
 
-# Inquisitor: hand out curses
 class InquisitorAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:

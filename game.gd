@@ -68,8 +68,7 @@ signal state_changed
 
 var characters: Array[Character]
 var knife_holder: Character
-var stab_target: Character : set = _set_stab_target
-var intervention_offers: Array[Character]
+var last_wounded_character: Character
 
 
 func _init(player_count: int) -> void:
@@ -112,20 +111,15 @@ func get_valid_stab_targets() -> Array[Character]:
 
 
 func has_character_with_matching_sword(color: Color) -> bool:
-	return characters.any(func(char: Character): 
-		return char.has_sword() and char.get_sword().color == color
+	return characters.any(func(character: Character): 
+		return character.has_sword() and character.get_sword().color == color
 	)
 
 
 func get_character_with_matching_sword(color: Color) -> Character:
-	return characters.filter(func(char: Character):
-		return char.has_sword() and char.get_sword().color == color
+	return characters.filter(func(character: Character):
+		return character.has_sword() and character.get_sword().color == color
 	).front()
-
-
-func _set_stab_target(target: Character) -> void:
-	intervention_offers = [] # clear intervention offers when target changes
-	stab_target = target
 
 
 func set_knife_holder(c: Character) -> void:
@@ -133,17 +127,20 @@ func set_knife_holder(c: Character) -> void:
 	state_changed.emit()
 
 
-func suffer_wound(c: Character, wound: CharacterStats.Wound) -> void:
-	if c.is_captured():
-		return
-	if c.valid_new_wounds().is_empty():
-		c.captured = true
-		state_changed.emit()
-		return
+func suffer_wound(c: Character, wound_context: WoundContext) -> void:
+	var wound := wound_context.wound_type
+	if wound == null:
+		push_error("Character can't suffer wound without type!")
 	if wound not in c.valid_new_wounds():
 		push_error("%s not in valid wounds for character %s: %s" % [wound, c, c.valid_new_wounds()])
 		return
-	c.take_wound(wound)
+	c.take_wound(wound_context)
+	last_wounded_character = c
+	state_changed.emit()
+
+
+func capture(c: Character) -> void:
+	c.is_captured = true
 	state_changed.emit()
 
 
@@ -152,14 +149,12 @@ func remove_wound(c: Character, wound: CharacterStats.Wound) -> void:
 	if idx == -1:
 		return
 	c.wounds.remove_at(idx)
-	if c.captured and not c.valid_new_wounds().is_empty():
-		c.captured = false
 	state_changed.emit()
 
 
 func clear_wounds(c: Character) -> void:
 	c.wounds.clear()
-	c.captured = false
+	c.is_captured = false
 	state_changed.emit()
 
 

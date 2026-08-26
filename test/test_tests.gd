@@ -86,7 +86,9 @@ func test_available_wounds():
 
 func test_add_invalid_wound():
 	var character := Character.new(Game.BLUE_HARLEQUIN)
-	character.take_wound(CharacterStats.Wound.BLUE)
+	var wound_context := WoundContext.new(character)
+	wound_context.wound_type = CharacterStats.Wound.BLUE
+	character.take_wound(wound_context)
 	var errors := get_errors()
 	assert_eq(errors.size(), 1, "Blue Harlequin can't take Blue wounds, but no error was thrown!")
 	handle_errors(errors)

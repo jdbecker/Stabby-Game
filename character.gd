@@ -3,10 +3,11 @@ extends RefCounted
 ## Dynamic data representing the current state of a character during the course of play
 
 var wounds: Array[CharacterStats.Wound] = []
-var unassigned_wounds := 0
+var unassigned_wounds: Array[WoundContext] = []
 var unassigned_heals := 0
-var ability_available: bool = false
-var captured: bool = false
+var ability_available: bool : get = _get_ability_available
+var last_wound: WoundContext
+var is_captured: bool = false
 # Instead of 2 types of Inquisitors (one for each clue color) we're treating clue color as dynamic
 # data that is set when the character is initialized
 var clue_color: CharacterStats.Clan
@@ -33,14 +34,30 @@ func _get_clan() -> CharacterStats.Clan:
 	return _stats.clan
 
 
-func take_wound(wound: CharacterStats.Wound) -> void:
+func _get_ability_available() -> bool:
+	if last_wound.wound_type == CharacterStats.Wound.RANK and not last_wound.block_ability:
+		if rank == CharacterStats.Rank.ALCHEMIST:
+			return last_wound.intervened_for != null
+		else:
+			return true
+	else:
+		return false
+
+
+func take_wound(wound_context: WoundContext) -> void:
+	var wound := wound_context.wound_type
+	if wound == null:
+		push_error("wound_type must be assigned to wound_context before it can be applied!")
 	var remaining_wounds := valid_new_wounds()
 	if wound not in remaining_wounds:
-		push_error("Character %s cannot take wound %s! Valid wounds are %s" % [self, CharacterStats.Wound.keys()[wound], wounds_to_string(remaining_wounds)])
+		push_error("Character %s cannot take wound %s! Valid wounds are %s" % [
+			self,
+			CharacterStats.Wound.keys()[wound],
+			wounds_to_string(remaining_wounds)
+		])
 		return
 	wounds.append(wound)
-	if wound == CharacterStats.Wound.RANK:
-		ability_available = true
+	last_wound = wound_context
 
 
 func wounds_to_string(wounds_array: Array[CharacterStats.Wound]) -> String:
@@ -55,11 +72,7 @@ func can_intervene() -> bool:
 
 
 func wound_count() -> int:
-	return wounds.size() + unassigned_wounds - unassigned_heals
-
-
-func is_captured() -> bool:
-	return captured
+	return wounds.size() + unassigned_wounds.size() - unassigned_heals
 
 
 func activate_ability(game: Game, ctx: AbilityContext = null) -> void:
