@@ -15,6 +15,17 @@ func _init(game: Game, attacker: Character, target) -> void:
 	_target = target
 
 
+func offer_intervention(intervener: Character) -> void:
+	if not intervener.can_intervene():
+		push_error("Invalid intervener %s! Only a character who hasn't taken a RANK wound can intervene!" % intervener)
+		return
+	elif intervener in intervention_offers:
+		push_error("Invalid intervener %s! Only a character who has not already offered to intervene can intervene!" % intervener)
+		return
+	else:
+		intervention_offers.append(intervener)
+
+
 func accept_intervention(intervener: Character) -> void:
 	if not intervener.can_intervene():
 		push_error("Invalid intervener %s! Only a character who hasn't taken a RANK wound can intervene!" % intervener)

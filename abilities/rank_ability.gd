@@ -74,6 +74,7 @@ class BerserkerAbility:
 		var target := actor.last_wound.attacker
 		if target == null:
 			push_error("Berserker's last attacker is missing from last_wound!")
+			return
 		var wound_context := WoundContext.new(actor)
 		wound_context.block_ability = true
 		actor.last_wound.attacker.unassigned_wounds.append(wound_context)
@@ -140,12 +141,18 @@ class AlchemistAbility:
 class HarlequinAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
+		if context == null or context.targets == null or context.targets.size() != 2:
+			push_error("Harlequin ability requires context with 2 targets")
+			return
 		for target in context.targets:
 			pass # TODO: when UI is done, reveal target info to actor player
 
 class InquisitorAbility:
 	extends RankAbility
 	func apply(game: Game, actor: Character, context: AbilityContext) -> void:
+		if context == null or context.targets == null or context.targets.size() < 2:
+			push_error("Inquisitor ability requires context with at least 2 targets")
+			return
 		var curse_recipients := context.targets
 		var true_curse_recipient: Character = curse_recipients.pop_front()
 		_give_ability_card(game, AbilityCard.TrueCurse.new(), true_curse_recipient)
