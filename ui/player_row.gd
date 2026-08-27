@@ -20,9 +20,9 @@ func setup(game: Game, index: int, character: Character) -> void:
 	_index = index
 	_character = character
 	_give_dagger.pressed.connect(func() -> void: _game.set_knife_holder(_character))
-	_add.pressed.connect(func() -> void: _game.suffer_wound(_character, _selected_wound()))
+	_add.pressed.connect(func() -> void: _game.suffer_wound(_character, _selected_wound_context()))
 	_remove.pressed.connect(func() -> void: _game.remove_wound(_character, _selected_wound()))
-	_capture.pressed.connect(func() -> void: _game.suffer_wound(_character, CharacterStats.Wound.ANY))
+	_capture.pressed.connect(func() -> void: _game.capture(_character))
 	_clear.pressed.connect(func() -> void: _game.clear_wounds(_character))
 	_wound_type.item_selected.connect(func(_i: int) -> void: refresh())
 	_game.state_changed.connect(refresh)
@@ -33,8 +33,14 @@ func _selected_wound() -> CharacterStats.Wound:
 	return _wound_type.get_selected_id() as CharacterStats.Wound
 
 
+func _selected_wound_context() -> WoundContext:
+	var wound := WoundContext.new(_game.knife_holder)
+	wound.wound_type = _wound_type.get_selected_id() as CharacterStats.Wound
+	return wound
+
+
 func refresh() -> void:
-	var captured := _character.is_captured()
+	var captured := _character.is_captured
 	var suffix := "  [CAPTURED]" if captured else ""
 	_info.text = "P%d  %s  clue:%s%s" % [
 		_index, str(_character), CharacterStats.Clan.keys()[_character.clue_color], suffix

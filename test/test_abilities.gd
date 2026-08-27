@@ -9,7 +9,7 @@ func test_assassin_inflicts_up_to_two_wounds_and_passes_dagger():
 	context.target = target
 	actor.activate_ability(game, context)
 	# Assassin should attempt up to two wounds; ensure at least one wound recorded and dagger moved
-	assert_eq(target.unassigned_wounds, 2)
+	assert_eq(target.unassigned_wounds.size(), 2)
 	assert_eq(game.knife_holder, target)
 
 func test_mentalist_inflicts_rank_and_passes_dagger():
@@ -27,21 +27,24 @@ func test_mentalist_inflicts_unassigned_if_rank_not_available():
 	var game := Game.new(6)
 	var actor := Character.new(Game.BLUE_MENTALIST)
 	var target := Character.new(Game.RED_ELDER)
-	game.suffer_wound(target, CharacterStats.Wound.RANK)
+	var initial_wound := WoundContext.new(actor)
+	initial_wound.wound_type = CharacterStats.Wound.RANK
+	game.suffer_wound(target, initial_wound)
 	var ctx := AbilityContext.new()
 	ctx.target = target
 	actor.activate_ability(game, ctx)
-	assert_eq(target.unassigned_wounds, 1)
+	assert_eq(target.unassigned_wounds.size(), 1)
 	assert_eq(game.knife_holder, target)
 
 func test_berserker_wounds_attacker():
 	var game := Game.new(6)
 	var actor := Character.new(Game.BLUE_BERSERKER)
 	var attacker := Character.new(Game.RED_ELDER)
-	var ctx := AbilityContext.new()
-	ctx.target = attacker
-	actor.activate_ability(game, ctx)
-	assert_eq(attacker.unassigned_wounds, 1)
+	var wound := WoundContext.new(attacker)
+	wound.wound_type = CharacterStats.Wound.RANK
+	game.suffer_wound(actor, wound)
+	actor.activate_ability(game)
+	assert_eq(attacker.unassigned_wounds.size(), 1)
 
 func test_guardian_gives_shield_and_actor_gets_sword():
 	var game := Game.new(6)
@@ -104,9 +107,12 @@ func test_shielded_target_valid_when_guardian_wounded():
 	var ctx := AbilityContext.new()
 	ctx.target = target
 	actor.activate_ability(game, ctx)
-	game.suffer_wound(actor, CharacterStats.Wound.RANK)
-	game.suffer_wound(actor, CharacterStats.Wound.BLUE)
-	game.suffer_wound(actor, CharacterStats.Wound.BLUE)
+	var wound := WoundContext.new(target)
+	wound.wound_type = CharacterStats.Wound.RANK
+	game.suffer_wound(actor, wound)
+	wound.wound_type = CharacterStats.Wound.BLUE
+	game.suffer_wound(actor, wound)
+	game.suffer_wound(actor, wound)
 	# 1 character not valid: knife holder
 	assert_eq( game.get_valid_stab_targets().size(), game.characters.size() - 1)
 
@@ -135,7 +141,9 @@ func test_staff_already_having_color_wound_doesnt_break():
 	var game := Game.new(6)
 	var actor := Character.new(Game.BLUE_MAGE)
 	var red_elder := Character.new(Game.RED_ELDER)
-	game.suffer_wound(red_elder, CharacterStats.Wound.RED)
+	var wound := WoundContext.new(actor)
+	wound.wound_type = CharacterStats.Wound.RED
+	game.suffer_wound(red_elder, wound)
 	assert_eq(red_elder.valid_new_wounds(), [CharacterStats.Wound.RANK, CharacterStats.Wound.RED])
 	var ctx := AbilityContext.new()
 	ctx.target = red_elder
@@ -181,9 +189,12 @@ func test_alchemist_intervention_heal():
 	var game := Game.new(6)
 	var actor := Character.new(Game.BLUE_ALCHEMIST)
 	var target := Character.new(Game.RED_ELDER)
+	var wound := WoundContext.new(game.characters[0])
+	wound.intervened_for = target
+	wound.wound_type = CharacterStats.Wound.RANK
+	actor.take_wound(wound)
 	var ctx := AbilityContext.new()
 	ctx.intervention = true
-	ctx.target = target
 	ctx.heal = true
 	actor.activate_ability(game, ctx)
 	assert_eq(target.unassigned_heals, 1)
@@ -192,12 +203,16 @@ func test_alchemist_intervention_wound():
 	var game := Game.new(6)
 	var actor := Character.new(Game.BLUE_ALCHEMIST)
 	var target := Character.new(Game.RED_ELDER)
+	var wound := WoundContext.new(game.characters[0])
+	wound.intervened_for = target
+	wound.wound_type = CharacterStats.Wound.RANK
+	actor.take_wound(wound)
 	var ctx := AbilityContext.new()
 	ctx.intervention = true
 	ctx.target = target
 	ctx.heal = false
 	actor.activate_ability(game, ctx)
-	assert_eq(target.unassigned_wounds, 1)
+	assert_eq(target.unassigned_wounds.size(), 1)
 
 func test_inquisitor_gives_curses():
 	var game := Game.new(6)
