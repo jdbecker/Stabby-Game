@@ -135,9 +135,8 @@ func suffer_wound(c: Character, wound_context: WoundContext) -> void:
 		push_error("%s not in valid wounds for character %s: %s" % [wound, c, c.valid_new_wounds()])
 		return
 	c.take_wound(wound_context)
-	set_knife_holder(c)
 	last_wounded_character = c
-	state_changed.emit()
+	set_knife_holder(c)
 
 
 func capture(c: Character) -> void:

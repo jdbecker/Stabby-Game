@@ -48,4 +48,5 @@ func apply_attack() -> void:
 			push_error("Impossible intervener! Intervener must still have RANK wound!")
 			return
 	else:
-		_game.suffer_wound(_target, wound_context)
+		_game.set_knife_holder(_target)
+		_target.unassigned_wounds.append(wound_context)
