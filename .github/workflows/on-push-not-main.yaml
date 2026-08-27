@@ -1,0 +1,50 @@
+name: On Push Non-Main
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+env:
+  GODOT_VERSION: 4.7.1 # If changed, change the image in the container section below as well!
+  EXPORT_PATH: export/html5
+      
+jobs:
+  on-push:
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Import Godot project
+        # required for GUT
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --import
+
+      - name: Run GUT tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit 2>&1 | tee gut.log
+          if grep -q 'Some GUT class_names have not been imported' gut.log; then
+            echo 'GUT failed because required classes were not imported.'
+            exit 1
+          fi
+
+      - name: Setup export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+
+      - name: Build Godot project
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ${EXPORT_PATH}
+          godot --headless --path . --export-release "Web" ${EXPORT_PATH}/index.html
+
+# Don't push to itch.io on non-main branches
