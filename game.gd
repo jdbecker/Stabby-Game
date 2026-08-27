@@ -131,6 +131,7 @@ func suffer_wound(c: Character, wound_context: WoundContext) -> void:
 	var wound := wound_context.wound_type
 	if wound == null:
 		push_error("Character can't suffer wound without type!")
+		return
 	if wound not in c.valid_new_wounds():
 		push_error("%s not in valid wounds for character %s: %s" % [wound, c, c.valid_new_wounds()])
 		return
