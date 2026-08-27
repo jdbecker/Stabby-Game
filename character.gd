@@ -2,6 +2,7 @@ class_name Character
 extends RefCounted
 ## Dynamic data representing the current state of a character during the course of play
 
+var name: String
 var wounds: Array[CharacterStats.Wound] = []
 var unassigned_wounds: Array[WoundContext] = []
 var unassigned_heals := 0

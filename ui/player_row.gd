@@ -42,8 +42,8 @@ func _selected_wound_context() -> WoundContext:
 func refresh() -> void:
 	var captured := _character.is_captured
 	var suffix := "  [CAPTURED]" if captured else ""
-	_info.text = "P%d  %s  clue:%s%s" % [
-		_index, str(_character), CharacterStats.Clan.keys()[_character.clue_color], suffix
+	_info.text = "%s  %s  clue:%s%s" % [
+		_character.name, str(_character), CharacterStats.Clan.keys()[_character.clue_color], suffix
 	]
 	_wounds_label.text = _character.wounds_to_string(_character.wounds)
 	_give_dagger.text = "HOLDS" if _character == _game.knife_holder else "give"

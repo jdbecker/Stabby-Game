@@ -89,6 +89,11 @@ func _init(player_count: int) -> void:
 		characters.append(Character.new(INQUISITOR))
 	assert(characters.size() == player_count, "Couldn't create correct number of characters! Characters: %s" % str(characters))
 	
+	characters.shuffle()
+	for i in range(characters.size()):
+		var character := characters[i]
+		character.name = "Player%s" % i
+	
 	knife_holder = characters[randi() % characters.size()]
 
 
