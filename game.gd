@@ -111,7 +111,7 @@ func get_valid_stab_targets() -> Array[Character]:
 
 
 func has_character_with_matching_sword(color: Color) -> bool:
-	return characters.any(func(character: Character): 
+	return characters.any(func(character: Character):
 		return character.has_sword() and character.get_sword().color == color
 	)
 
@@ -135,6 +135,7 @@ func suffer_wound(c: Character, wound_context: WoundContext) -> void:
 		push_error("%s not in valid wounds for character %s: %s" % [wound, c, c.valid_new_wounds()])
 		return
 	c.take_wound(wound_context)
+	set_knife_holder(c)
 	last_wounded_character = c
 	state_changed.emit()
 

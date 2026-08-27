@@ -1,7 +1,7 @@
 class_name Attack
 extends RefCounted
 
-var intervention_offers: Array[Character]
+var intervention_offers: Array[Character] = []
 
 var _attacker: Character
 var _target: Character
@@ -43,11 +43,9 @@ func apply_attack() -> void:
 		if _intervener.can_intervene():
 			wound_context.intervened_for = _target
 			wound_context.wound_type = CharacterStats.Wound.RANK
-			_game.set_knife_holder(_intervener)
-			_intervener.take_wound(wound_context)
+			_game.suffer_wound(_intervener, wound_context)
 		else:
 			push_error("Impossible intervener! Intervener must still have RANK wound!")
 			return
 	else:
-		_game.set_knife_holder(_target)
-		_target.unassigned_wounds.append(wound_context)
+		_game.suffer_wound(_target, wound_context)
