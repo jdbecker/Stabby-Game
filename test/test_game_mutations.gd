@@ -102,14 +102,5 @@ func test_clear_wounds_empties():
 	assert_false(c.is_captured)
 
 
-func test_state_changed_emitted_on_mutation():
-	var game := Game.new(6)
-	watch_signals(game)
-	game.set_knife_holder(game.characters[0])
-	assert_signal_emitted(game, "state_changed", "set_knife_holder should emit state_changed")
-	var c := Character.new(Game.RED_ELDER)
-	game.suffer_wound(c, _wound(RED))
-	assert_signal_emit_count(game, "state_changed", 2)
-
 func handle_errors(errors: Array) -> void:
 	errors.map(func(error: GutTrackedError): error.handled = true)

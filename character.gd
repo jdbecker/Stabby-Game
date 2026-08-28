@@ -81,16 +81,6 @@ func wound_count() -> int:
 	return wounds.size() + unassigned_wounds.size() - unassigned_heals
 
 
-func activate_ability(game: Game, ctx: AbilityContext = null) -> void:
-	# Dispatch to the RankAbility strategy for this character's rank.
-	var ability := RankAbility.for_rank(_stats.rank)
-	if ability == null:
-		push_error("No RankAbility available for rank %s" % _stats.rank)
-		return
-	ability.apply(game, self, ctx)
-	unused_ability = false
-
-
 func valid_new_wounds() -> Array[CharacterStats.Wound]:
 	var valid_wounds := _stats.wounds.duplicate()
 	for wound: CharacterStats.Wound in wounds:

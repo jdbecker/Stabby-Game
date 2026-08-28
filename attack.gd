@@ -1,16 +1,17 @@
 class_name Attack
 extends RefCounted
 
+signal wound_requested(character: Character, wound_context: WoundContext)
+signal knife_holder_requested(character: Character)
+
 var intervention_offers: Array[Character] = []
 
 var _attacker: Character
 var _target: Character
 var _intervener: Character
-var _game: Game
 
 
-func _init(game: Game, attacker: Character, target) -> void:
-	_game = game
+func _init(attacker: Character, target: Character) -> void:
 	_attacker = attacker
 	_target = target
 
@@ -43,10 +44,10 @@ func apply_attack() -> void:
 		if _intervener.can_intervene():
 			wound_context.intervened_for = _target
 			wound_context.wound_type = CharacterStats.Wound.RANK
-			_game.suffer_wound(_intervener, wound_context)
+			wound_requested.emit(_intervener, wound_context)
 		else:
 			push_error("Impossible intervener! Intervener must still have RANK wound!")
 			return
 	else:
-		_game.set_knife_holder(_target)
 		_target.unassigned_wounds.append(wound_context)
+		knife_holder_requested.emit(_target)

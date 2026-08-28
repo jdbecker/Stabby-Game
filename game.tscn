@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game.gd" id="1_game"]
+[ext_resource type="PackedScene" path="res://ui/dev_panel.tscn" id="2_dev_panel"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_game")
+
+[node name="DevPanel" parent="." instance=ExtResource("2_dev_panel")]
