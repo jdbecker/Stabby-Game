@@ -1,5 +1,5 @@
 class_name Game
-extends RefCounted
+extends Node
 
 const INQUISITOR := preload("uid://drrilkp3puywx")
 const BLUE_ELDER := preload("uid://6v6gjjk8ok0b")
@@ -64,14 +64,17 @@ const BLUE_CHARACTERS: Array[CharacterStats] = [
 	BLUE_COURTESAN,
 ]
 
-signal state_changed
-
 var characters: Array[Character]
 var knife_holder: Character
 var last_wounded_character: Character
+var _dev_panel: DevPanel
 
 
-func _init(player_count: int) -> void:
+func _init(player_count: int = 7) -> void:
+	start_new_game(player_count)
+
+
+func start_new_game(player_count: int) -> void:
 	if player_count < 6 or 12 < player_count:
 		push_error("Invalid player_count: %s. Must be between 6 and 12 players!" % player_count)
 		return
@@ -95,6 +98,38 @@ func _init(player_count: int) -> void:
 		character.name = "Player%s" % i
 	
 	knife_holder = characters[randi() % characters.size()]
+	if _dev_panel != null:
+		_dev_panel.setup(characters, knife_holder)
+	_update_dev_panel()
+
+
+func activate_ability(character: Character, context: AbilityContext = null) -> void:
+	var ability := RankAbility.for_rank(character.rank)
+	if ability == null:
+		push_error("No RankAbility available for rank %s" % character.rank)
+		return
+	ability.apply(self, character, context)
+	character.unused_ability = false
+	_update_dev_panel()
+
+
+func _ready() -> void:
+	_dev_panel = get_node_or_null("DevPanel")
+	if _dev_panel == null:
+		return
+	_dev_panel.new_game_requested.connect(start_new_game)
+	_dev_panel.give_dagger_requested.connect(set_knife_holder)
+	_dev_panel.add_wound_requested.connect(_on_add_wound_requested)
+	_dev_panel.remove_wound_requested.connect(remove_wound)
+	_dev_panel.capture_requested.connect(capture)
+	_dev_panel.clear_wounds_requested.connect(clear_wounds)
+	_dev_panel.setup(characters, knife_holder)
+
+
+func _on_add_wound_requested(character: Character, wound_type: CharacterStats.Wound) -> void:
+	var wound_context := WoundContext.new(knife_holder)
+	wound_context.wound_type = wound_type
+	suffer_wound(character, wound_context)
 
 
 func get_other_characters(...exclude_characters: Array) -> Array[Character]:
@@ -129,7 +164,7 @@ func get_character_with_matching_sword(color: Color) -> Character:
 
 func set_knife_holder(c: Character) -> void:
 	knife_holder = c
-	state_changed.emit()
+	_update_dev_panel()
 
 
 func suffer_wound(c: Character, wound_context: WoundContext) -> void:
@@ -147,7 +182,7 @@ func suffer_wound(c: Character, wound_context: WoundContext) -> void:
 
 func capture(c: Character) -> void:
 	c.is_captured = true
-	state_changed.emit()
+	_update_dev_panel()
 
 
 func remove_wound(c: Character, wound: CharacterStats.Wound) -> void:
@@ -155,18 +190,23 @@ func remove_wound(c: Character, wound: CharacterStats.Wound) -> void:
 	if idx == -1:
 		return
 	c.wounds.remove_at(idx)
-	state_changed.emit()
+	_update_dev_panel()
 
 
 func clear_wounds(c: Character) -> void:
 	c.wounds.clear()
 	c.is_captured = false
-	state_changed.emit()
+	_update_dev_panel()
 
 
 func give_ability_card(card: AbilityCard, character: Character) -> void:
 	character.ability_cards.append(card)
-	state_changed.emit()
+	_update_dev_panel()
+
+
+func _update_dev_panel() -> void:
+	if _dev_panel != null:
+		_dev_panel.update_state(knife_holder)
 
 
 func clan_leader(clan: CharacterStats.Clan) -> Character:
