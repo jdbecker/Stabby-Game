@@ -1,0 +1,458 @@
+[gd_scene format=3 uid="uid://87n3mryosmpd"]
+
+[ext_resource type="Script" uid="uid://7wemeu2ajgxh" path="res://ui/player_views/player_view.gd" id="1_sc2o6"]
+[ext_resource type="Texture2D" uid="uid://bufdewe0mkvel" path="res://assets/icons/clan red icon.png" id="2_u6ht3"]
+[ext_resource type="Texture2D" uid="uid://cx7lt7jfdi23g" path="res://assets/icons/wound rank1 icon.png" id="3_jo7wr"]
+[ext_resource type="Texture2D" uid="uid://da2qqjuydttxq" path="res://assets/icons/wound red icon.png" id="4_lh5d3"]
+[ext_resource type="Texture2D" uid="uid://bi875g8ra420h" path="res://assets/icons/wound redorblue icon.png" id="6_5wn5c"]
+[ext_resource type="Texture2D" uid="uid://c8j4wbiqowyr6" path="res://assets/icons/wound rank2 icon.png" id="7_d60j5"]
+[ext_resource type="Texture2D" uid="uid://bftmwicr7g3sm" path="res://assets/icons/wound unknown icon.png" id="8_at85h"]
+[ext_resource type="Texture2D" uid="uid://cifcdkojfe0il" path="res://assets/icons/wound rank3 icon.png" id="9_d60j5"]
+[ext_resource type="Texture2D" uid="uid://cei80pbnqhbjj" path="res://assets/icons/wound rank4 icon.png" id="10_mu48t"]
+[ext_resource type="Texture2D" uid="uid://cwgd504eivpbd" path="res://assets/icons/wound rank5 icon.png" id="11_fuoym"]
+[ext_resource type="Texture2D" uid="uid://dfdio7ogfbcj8" path="res://assets/icons/wound rank6 icon.png" id="12_fuoym"]
+[ext_resource type="Texture2D" uid="uid://cowgnrfx3h8y1" path="res://assets/icons/wound rank7 icon.png" id="13_pe285"]
+[ext_resource type="Texture2D" uid="uid://bpdaxmxf4l0f7" path="res://assets/icons/wound rank8 icon.png" id="14_jb68u"]
+[ext_resource type="Texture2D" uid="uid://dxxantue436gn" path="res://assets/icons/wound rank9 icon.png" id="15_ckm87"]
+[ext_resource type="Texture2D" uid="uid://b4v2eumb7p7tp" path="res://assets/icons/wound rankinquisitor icon.png" id="16_nknbv"]
+[ext_resource type="Texture2D" uid="uid://d3ahgtumc0sa" path="res://assets/icons/wound any icon.png" id="17_jwcs3"]
+
+[node name="PlayerView" type="Control" unique_id=979401129]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sc2o6")
+metadata/_edit_use_anchors_ = true
+
+[node name="TabContainer" type="TabContainer" parent="." unique_id=1368596685]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+tab_alignment = 1
+current_tab = 1
+tabs_position = 1
+tab_focus_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="Self" type="Panel" parent="TabContainer" unique_id=2025648296]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="PlayerNameLabel" type="Label" parent="TabContainer/Self" unique_id=873038476]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.1
+theme_override_font_sizes/font_size = 72
+text = "Player Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ClanColorImage" type="TextureRect" parent="TabContainer/Self" unique_id=1093539682]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 27.0
+offset_top = 131.0
+offset_right = 177.0
+offset_bottom = 281.0
+texture = ExtResource("2_u6ht3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Self" unique_id=1596858675]
+layout_mode = 0
+offset_left = 474.0
+offset_top = 136.0
+offset_right = 624.0
+offset_bottom = 630.0
+
+[node name="RankWound" type="TextureRect" parent="TabContainer/Self/VBoxContainer" unique_id=1998863644]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("3_jo7wr")
+expand_mode = 5
+
+[node name="AlignmentWound1" type="TextureRect" parent="TabContainer/Self/VBoxContainer" unique_id=704496740]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("4_lh5d3")
+expand_mode = 5
+
+[node name="AlignmentWound2" type="TextureRect" parent="TabContainer/Self/VBoxContainer" unique_id=1148796075]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("4_lh5d3")
+expand_mode = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Self" unique_id=526319302]
+layout_mode = 0
+offset_left = 296.0
+offset_top = 1019.0
+offset_right = 626.0
+offset_bottom = 1077.0
+alignment = 2
+
+[node name="ClueColorLabel" type="Label" parent="TabContainer/Self/HBoxContainer" unique_id=164408847]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "Clue Color:"
+
+[node name="ClueColorImage" type="TextureRect" parent="TabContainer/Self/HBoxContainer" unique_id=826740581]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("2_u6ht3")
+expand_mode = 3
+
+[node name="Everyone" type="MarginContainer" parent="TabContainer" unique_id=730000569]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 1
+
+[node name="GameCharactersList" type="VBoxContainer" parent="TabContainer/Everyone" unique_id=289469858]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HintSheet" type="MarginContainer" parent="TabContainer" unique_id=596728401]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 2
+
+[node name="HintCharactersList" type="VBoxContainer" parent="TabContainer/HintSheet" unique_id=1773070380]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=85302155]
+layout_mode = 2
+
+[node name="CharacterAbility" type="Label" parent="TabContainer/HintSheet/HintCharactersList/Header" unique_id=125686407]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "Character & Ability"
+
+[node name="WoundTypes" type="Label" parent="TabContainer/HintSheet/HintCharactersList/Header" unique_id=737883553]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_font_sizes/font_size = 32
+text = "Wound Types"
+
+[node name="HSeparator10" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=997461168]
+layout_mode = 2
+
+[node name="Elder" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1887883079]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="ElderLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Elder" unique_id=1660373691]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]ELDER[/b]
+Take a \"Quill.\""
+
+[node name="ElderRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Elder" unique_id=395840746]
+layout_mode = 2
+texture = ExtResource("3_jo7wr")
+expand_mode = 3
+
+[node name="ElderAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Elder" unique_id=701033702]
+layout_mode = 2
+texture = ExtResource("6_5wn5c")
+expand_mode = 3
+
+[node name="ElderAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Elder" unique_id=284962398]
+layout_mode = 2
+texture = ExtResource("6_5wn5c")
+expand_mode = 3
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1956082455]
+layout_mode = 2
+
+[node name="Assassin" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=77411187]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="AssassinLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Assassin" unique_id=1016464164]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]ASSASSIN[/b]
+Force a player to suffer 2 wounds.
+Then give the dagger to them."
+
+[node name="AssassinRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Assassin" unique_id=755464497]
+layout_mode = 2
+texture = ExtResource("7_d60j5")
+expand_mode = 3
+
+[node name="AssassinAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Assassin" unique_id=185165274]
+layout_mode = 2
+texture = ExtResource("8_at85h")
+expand_mode = 3
+
+[node name="AssassinAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Assassin" unique_id=2118282566]
+layout_mode = 2
+texture = ExtResource("8_at85h")
+expand_mode = 3
+
+[node name="HSeparator2" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1822909502]
+layout_mode = 2
+
+[node name="Harlequin" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=978730400]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="HarlequinLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Harlequin" unique_id=1341378677]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]HARLEQUIN[/b]
+Secretly look at any 2 character cards.
+This character's clue icon is of the rival clan."
+
+[node name="HarlequinRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Harlequin" unique_id=1522578342]
+layout_mode = 2
+texture = ExtResource("9_d60j5")
+expand_mode = 3
+
+[node name="HarlequinAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Harlequin" unique_id=1855326163]
+layout_mode = 2
+texture = ExtResource("8_at85h")
+expand_mode = 3
+
+[node name="HarlequinAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Harlequin" unique_id=465350947]
+layout_mode = 2
+texture = ExtResource("8_at85h")
+expand_mode = 3
+
+[node name="HSeparator3" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=599748241]
+layout_mode = 2
+
+[node name="Alchemist" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=951663771]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="AlchemistLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Alchemist" unique_id=514709187]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]ALCHEMIST[/b]*
+Force the player for whom you
+intervened to suffer or heal 1 wound."
+
+[node name="AlchemistRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Alchemist" unique_id=586051227]
+layout_mode = 2
+texture = ExtResource("10_mu48t")
+expand_mode = 3
+
+[node name="AlchemistAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Alchemist" unique_id=418144947]
+layout_mode = 2
+texture = ExtResource("8_at85h")
+expand_mode = 3
+
+[node name="AlchemistAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Alchemist" unique_id=1520330551]
+layout_mode = 2
+texture = ExtResource("8_at85h")
+expand_mode = 3
+
+[node name="HSeparator4" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1754033576]
+layout_mode = 2
+
+[node name="Mentalist" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=392287810]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="MentalistLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Mentalist" unique_id=207334293]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]MENTALIST[/b]
+Force a player to suffer 1 wound
+(rank token). Then give the dagger to them."
+
+[node name="MentalistRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Mentalist" unique_id=1317833841]
+layout_mode = 2
+texture = ExtResource("11_fuoym")
+expand_mode = 3
+
+[node name="MentalistAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Mentalist" unique_id=1060534867]
+layout_mode = 2
+texture = ExtResource("6_5wn5c")
+expand_mode = 3
+
+[node name="MentalistAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Mentalist" unique_id=330647794]
+layout_mode = 2
+texture = ExtResource("6_5wn5c")
+expand_mode = 3
+
+[node name="HSeparator5" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1510978795]
+layout_mode = 2
+
+[node name="Guardian" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1641546256]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="GuardianLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Guardian" unique_id=736948319]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]GUARDIAN[/b]
+Give a \"Shield\" to any player
+and take the matching color \"Sword.\""
+
+[node name="GuardianRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Guardian" unique_id=1293036018]
+layout_mode = 2
+texture = ExtResource("12_fuoym")
+expand_mode = 3
+
+[node name="GuardianAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Guardian" unique_id=978256934]
+layout_mode = 2
+texture = ExtResource("6_5wn5c")
+expand_mode = 3
+
+[node name="GuardianAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Guardian" unique_id=463534639]
+layout_mode = 2
+texture = ExtResource("6_5wn5c")
+expand_mode = 3
+
+[node name="HSeparator6" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=966324054]
+layout_mode = 2
+
+[node name="Berserker" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1763483160]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="BerserkerLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Berserker" unique_id=1160627008]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]BERSERKER[/b]
+Force the player who attacked
+you to suffer 1 wound."
+
+[node name="BerserkerRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Berserker" unique_id=387622330]
+layout_mode = 2
+texture = ExtResource("13_pe285")
+expand_mode = 3
+
+[node name="BerserkerAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Berserker" unique_id=1973081759]
+layout_mode = 2
+texture = ExtResource("6_5wn5c")
+expand_mode = 3
+
+[node name="BerserkerAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Berserker" unique_id=985567068]
+layout_mode = 2
+texture = ExtResource("8_at85h")
+expand_mode = 3
+
+[node name="HSeparator7" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=450511023]
+layout_mode = 2
+
+[node name="Mage" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=2011236638]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="MageLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Mage" unique_id=983339156]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]MAGE[/b]
+Give a \"Staff\" to any player
+and take a \"Staff.\""
+
+[node name="MageRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Mage" unique_id=408608366]
+layout_mode = 2
+texture = ExtResource("14_jb68u")
+expand_mode = 3
+
+[node name="MakeAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Mage" unique_id=967376133]
+layout_mode = 2
+texture = ExtResource("6_5wn5c")
+expand_mode = 3
+
+[node name="MageAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Mage" unique_id=1264930031]
+layout_mode = 2
+texture = ExtResource("8_at85h")
+expand_mode = 3
+
+[node name="HSeparator8" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=425169011]
+layout_mode = 2
+
+[node name="Courtesan" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1617462760]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="CourtesanLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Courtesan" unique_id=559820413]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]COURTESAN[/b]
+Give a \"Fan\" to any player."
+
+[node name="CourtesanRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Courtesan" unique_id=41685026]
+layout_mode = 2
+texture = ExtResource("15_ckm87")
+expand_mode = 3
+
+[node name="CourtesanAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Courtesan" unique_id=998076418]
+layout_mode = 2
+texture = ExtResource("6_5wn5c")
+expand_mode = 3
+
+[node name="CourtesanAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Courtesan" unique_id=1498514307]
+layout_mode = 2
+texture = ExtResource("8_at85h")
+expand_mode = 3
+
+[node name="HSeparator9" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=756810972]
+layout_mode = 2
+
+[node name="Inquisitor" type="HBoxContainer" parent="TabContainer/HintSheet/HintCharactersList" unique_id=285300975]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="InquisitorLabel" type="RichTextLabel" parent="TabContainer/HintSheet/HintCharactersList/Inquisitor" unique_id=42225392]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b]INQUISITOR[/b]
+Give \"Curse\" cards facedown
+to the players of your choosing."
+
+[node name="InquisitorRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Inquisitor" unique_id=364853310]
+layout_mode = 2
+texture = ExtResource("16_nknbv")
+expand_mode = 3
+
+[node name="InquisitorAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Inquisitor" unique_id=626773390]
+layout_mode = 2
+texture = ExtResource("17_jwcs3")
+expand_mode = 3
+
+[node name="InquisitorAffiliationWound2" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Inquisitor" unique_id=1384316893]
+layout_mode = 2
+texture = ExtResource("17_jwcs3")
+expand_mode = 3
+
+[node name="HSeparator11" type="HSeparator" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1925751026]
+layout_mode = 2
+
+[node name="AdditionalNotes" type="Label" parent="TabContainer/HintSheet/HintCharactersList" unique_id=1921886340]
+layout_mode = 2
+text = "*This character can only use their ability
+when they're intervening"

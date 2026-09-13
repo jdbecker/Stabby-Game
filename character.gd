@@ -17,6 +17,7 @@ var rank: CharacterStats.Rank: get = _get_rank # retrievable but immutable
 var clan: CharacterStats.Clan: get = _get_clan
 var _stats: CharacterStats
 var ability_cards: Array[AbilityCard] = []
+var has_knife := false
 
 
 func _init(character_stats: CharacterStats) -> void:
