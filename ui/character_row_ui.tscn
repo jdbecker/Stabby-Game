@@ -5,11 +5,18 @@
 [ext_resource type="Texture2D" uid="uid://bufdewe0mkvel" path="res://assets/icons/clan red icon.png" id="2_gpb4u"]
 [ext_resource type="Texture2D" uid="uid://cx7lt7jfdi23g" path="res://assets/icons/wound rank1 icon.png" id="3_8yo3b"]
 
-[node name="CharacterRowUI" type="HBoxContainer" unique_id=807379629]
+[node name="CharacterRowUI" type="VBoxContainer" unique_id=56721085]
 custom_minimum_size = Vector2(0, 50)
+offset_right = 184.0
+offset_bottom = 50.0
 script = ExtResource("1_gpb4u")
 
-[node name="CharacterName" type="Label" parent="." unique_id=265746492]
+[node name="CharacterHBox" type="HBoxContainer" parent="." unique_id=1750043842]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="CharacterName" type="Label" parent="CharacterHBox" unique_id=265746492]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -17,7 +24,7 @@ theme_override_font_sizes/font_size = 18
 text = "Character Full Name"
 clip_text = true
 
-[node name="KnifeIcon" type="TextureRect" parent="." unique_id=21062776]
+[node name="KnifeIcon" type="TextureRect" parent="CharacterHBox" unique_id=21062776]
 unique_name_in_owner = true
 custom_maximum_size = Vector2(125, -1)
 layout_mode = 2
@@ -26,12 +33,12 @@ texture = ExtResource("1_cg2f0")
 expand_mode = 3
 stretch_mode = 5
 
-[node name="ClueColor" type="HBoxContainer" parent="." unique_id=693933509]
+[node name="ClueColor" type="HBoxContainer" parent="CharacterHBox" unique_id=693933509]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="ClueColorLabel" type="Label" parent="ClueColor" unique_id=175803268]
+[node name="ClueColorLabel" type="Label" parent="CharacterHBox/ClueColor" unique_id=175803268]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clue
@@ -39,15 +46,18 @@ Color:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ClueColorIcon" type="TextureRect" parent="ClueColor" unique_id=1539579962]
+[node name="ClueColorIcon" type="TextureRect" parent="CharacterHBox/ClueColor" unique_id=1539579962]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 texture = ExtResource("2_gpb4u")
 
-[node name="RankWound" type="TextureRect" parent="." unique_id=1911980469]
+[node name="RankWound" type="TextureRect" parent="CharacterHBox" unique_id=1911980469]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 texture = ExtResource("3_8yo3b")
 expand_mode = 3
+
+[node name="HSeparator" type="HSeparator" parent="." unique_id=1898280350]
+layout_mode = 2

@@ -1,5 +1,5 @@
 class_name CharacterRowUI
-extends HBoxContainer
+extends VBoxContainer
 
 var character: Character
 
@@ -26,6 +26,7 @@ const WOUND_UNKNOWN_ICON = preload("uid://bftmwicr7g3sm")
 @onready var clue_color: HBoxContainer = %ClueColor
 @onready var clue_color_icon: TextureRect = %ClueColorIcon
 @onready var rank_wound: TextureRect = %RankWound
+@onready var character_h_box: HBoxContainer = %CharacterHBox
 var affiliation_wounds : Array[TextureRect] = []
 
 
@@ -50,7 +51,7 @@ func update() -> void:
 		var new_wound := TextureRect.new()
 		affiliation_wounds.append(new_wound)
 		new_wound.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-		add_child(new_wound)
+		character_h_box.add_child(new_wound)
 		match wound:
 			CharacterStats.Wound.RED: new_wound.texture = WOUND_RED_ICON
 			CharacterStats.Wound.BLUE: new_wound.texture = WOUND_BLUE_ICON

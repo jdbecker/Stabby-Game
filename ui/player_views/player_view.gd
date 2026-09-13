@@ -43,11 +43,15 @@ var all_characters: Array[Character]
 func test() -> void:
 	var game := Game.new(7)
 	all_characters = game.characters
-	current_character = all_characters[0]
+	current_character = all_characters.pick_random()
 
 
 func _ready() -> void:
 	test() # TODO remove
+	if not current_character:
+		push_error("PlayerView requires current_character to be set!")
+	if not all_characters:
+		push_error("PlayerView requires all_characters to be set!")
 	player_name_label.text = current_character.name
 	clan_color_image.texture = _get_clan_color_image(current_character.clan)
 	rank_wound.texture = _get_rank_icon(current_character)
