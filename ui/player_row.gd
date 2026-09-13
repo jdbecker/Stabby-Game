@@ -6,6 +6,7 @@ signal add_wound_requested(character: Character, wound_type: CharacterStats.Woun
 signal remove_wound_requested(character: Character, wound_type: CharacterStats.Wound)
 signal capture_requested(character: Character)
 signal clear_wounds_requested(character: Character)
+signal view_requested(character: Character)
 
 @onready var _give_dagger: Button = %GiveDagger
 @onready var _info: Label = %Info
@@ -15,6 +16,7 @@ signal clear_wounds_requested(character: Character)
 @onready var _remove: Button = %Remove
 @onready var _capture: Button = %Capture
 @onready var _clear: Button = %Clear
+@onready var _view: Button = %View
 
 var _index: int
 var _character: Character
@@ -28,6 +30,7 @@ func setup(index: int, character: Character) -> void:
 	_remove.pressed.connect(func() -> void: remove_wound_requested.emit(_character, _selected_wound()))
 	_capture.pressed.connect(func() -> void: capture_requested.emit(_character))
 	_clear.pressed.connect(func() -> void: clear_wounds_requested.emit(_character))
+	_view.pressed.connect(func() -> void: view_requested.emit(_character))
 	_wound_type.item_selected.connect(func(_i: int) -> void: _refresh_wound_controls())
 	refresh()
 

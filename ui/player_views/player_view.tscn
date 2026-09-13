@@ -17,6 +17,12 @@
 [ext_resource type="Texture2D" uid="uid://b4v2eumb7p7tp" path="res://assets/icons/wound rankinquisitor icon.png" id="16_nknbv"]
 [ext_resource type="Texture2D" uid="uid://d3ahgtumc0sa" path="res://assets/icons/wound any icon.png" id="17_jwcs3"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cbhbn"]
+bg_color = Color(0.2509804, 0.2509804, 0.2509804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b5ddx"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
 [node name="PlayerView" type="Control" unique_id=979401129]
 layout_mode = 3
 anchors_preset = 15
@@ -35,15 +41,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 42
+theme_override_styles/panel = SubResource("StyleBoxFlat_cbhbn")
 tab_alignment = 1
-current_tab = 1
+current_tab = 0
 tabs_position = 1
 tab_focus_mode = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="Self" type="Panel" parent="TabContainer" unique_id=2025648296]
-visible = false
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_b5ddx")
 metadata/_tab_index = 0
 
 [node name="PlayerNameLabel" type="Label" parent="TabContainer/Self" unique_id=873038476]
@@ -113,6 +120,7 @@ texture = ExtResource("2_u6ht3")
 expand_mode = 3
 
 [node name="Everyone" type="MarginContainer" parent="TabContainer" unique_id=730000569]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
@@ -434,10 +442,16 @@ text = "[b]INQUISITOR[/b]
 Give \"Curse\" cards facedown
 to the players of your choosing."
 
-[node name="InquisitorRankWound" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Inquisitor" unique_id=364853310]
+[node name="InquisitorRankWound" type="TextureButton" parent="TabContainer/HintSheet/HintCharactersList/Inquisitor" unique_id=302236950]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
-texture = ExtResource("16_nknbv")
-expand_mode = 3
+texture_normal = ExtResource("16_nknbv")
+texture_pressed = ExtResource("16_nknbv")
+texture_hover = ExtResource("16_nknbv")
+texture_disabled = ExtResource("16_nknbv")
+texture_focused = ExtResource("16_nknbv")
+stretch_mode = 4
 
 [node name="InquisitorAffiliationWound1" type="TextureRect" parent="TabContainer/HintSheet/HintCharactersList/Inquisitor" unique_id=626773390]
 layout_mode = 2

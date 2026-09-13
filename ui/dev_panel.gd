@@ -8,7 +8,9 @@ signal capture_requested(character: Character)
 signal clear_wounds_requested(character: Character)
 signal new_game_requested(player_count: int)
 
-const PlayerRowScene := preload("res://ui/player_row.tscn")
+const PLAYER_ROW = preload("uid://kq181b23yokv")
+const PLAYER_VIEW = preload("uid://87n3mryosmpd")
+
 
 @onready var _player_count: SpinBox = %PlayerCount
 @onready var _new_game_button: Button = %NewGameButton
@@ -17,6 +19,7 @@ const PlayerRowScene := preload("res://ui/player_row.tscn")
 
 var _characters: Array[Character]
 var _knife_holder: Character
+var _views: Array[PlayerView]
 
 
 func _ready() -> void:
@@ -29,14 +32,22 @@ func _start_new_game() -> void:
 
 	# Game owns gameplay state; the panel only rebuilds its presentation.
 	for i in _characters.size():
-		var row: PlayerRow = PlayerRowScene.instantiate()
+		var character := _characters[i]
+		var view: PlayerView = PLAYER_VIEW.instantiate()
+		view.current_character = character
+		view.all_characters = _characters
+		add_child(view)
+		view.hide()
+		_views.append(view)
+		var row: PlayerRow = PLAYER_ROW.instantiate()
 		_player_list.add_child(row)
-		row.setup(i, _characters[i])
+		row.setup(i, character)
 		row.give_dagger_requested.connect(give_dagger_requested.emit)
 		row.add_wound_requested.connect(add_wound_requested.emit)
 		row.remove_wound_requested.connect(remove_wound_requested.emit)
 		row.capture_requested.connect(capture_requested.emit)
 		row.clear_wounds_requested.connect(clear_wounds_requested.emit)
+		row.view_requested.connect(func(_character) -> void: view.visible = true)
 	update_state(_knife_holder)
 
 
@@ -54,3 +65,5 @@ func update_state(knife_holder: Character) -> void:
 	_summary.text = "Dagger: P%d %s    |    %d players" % [
 		holder_index, str(knife_holder), _characters.size()
 	]
+	for view: PlayerView in _views:
+		view.refresh()

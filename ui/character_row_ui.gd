@@ -36,12 +36,13 @@ func _ready() -> void:
 	character_name.text = character.name
 	clue_color_icon.texture = _get_clue_icon(character)
 	rank_wound.texture = _get_rank_icon(character)
-	update()
+	refresh()
 
 
-func update() -> void:
+func refresh() -> void:
 	for wound in affiliation_wounds:
-		wound.queue_free()
+		wound.free()
+	affiliation_wounds = []
 	knife_icon.visible = character.has_knife
 	var has_taken_rank_wound := CharacterStats.Wound.RANK in character.wounds
 	rank_wound.visible = has_taken_rank_wound

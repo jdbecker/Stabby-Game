@@ -33,21 +33,10 @@ var all_characters: Array[Character]
 @onready var alignment_wound_2: TextureRect = %AlignmentWound2
 @onready var clue_color_image: TextureRect = %ClueColorImage
 @onready var game_characters_list: VBoxContainer = %GameCharactersList
-
-
-#func _init(current_character: Character, all_characters: Array[Character]) -> void:
-	#self.current_character = current_character
-	#self.all_characters = all_characters
-
-
-func test() -> void:
-	var game := Game.new(7)
-	all_characters = game.characters
-	current_character = all_characters.pick_random()
+@onready var inquisitor_rank_wound: TextureButton = %InquisitorRankWound
 
 
 func _ready() -> void:
-	test() # TODO remove
 	if not current_character:
 		push_error("PlayerView requires current_character to be set!")
 	if not all_characters:
@@ -63,11 +52,13 @@ func _ready() -> void:
 		character_row.character = character
 		game_characters_list.add_child(character_row)
 	_view_neighbor_clue_color()
+	inquisitor_rank_wound.pressed.connect(func() -> void: self.hide())
+	refresh()
 
 
-func update() -> void:
+func refresh() -> void:
 	for character: CharacterRowUI in game_characters_list.get_children():
-		character.update()
+		character.refresh()
 
 func _view_neighbor_clue_color() -> void:
 	var self_index := game_characters_list.get_children().find_custom(
@@ -77,7 +68,7 @@ func _view_neighbor_clue_color() -> void:
 	if self_index == -1:
 		push_error("Can't find current character in all_characters ui!")
 	var neighbor_index := self_index - 1
-	if neighbor_index <= 0:
+	if neighbor_index < 0:
 		neighbor_index = game_characters_list.get_children().size() - 1
 	var neighbor_ui := game_characters_list.get_child(neighbor_index) as CharacterRowUI
 	neighbor_ui.clue_color.visible = true
