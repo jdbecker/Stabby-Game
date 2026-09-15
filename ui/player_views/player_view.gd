@@ -1,6 +1,9 @@
 class_name PlayerView
 extends Control
 
+signal request_stab(target: Character)
+signal request_pass_dagger(target: Character)
+
 const CLAN_BLUE_ICON = preload("uid://crs81muwa6whu")
 const CLAN_RED_ICON = preload("uid://bufdewe0mkvel")
 const CLAN_INQUISITOR_ICON = preload("uid://bs7i8mqh6pwe8")
@@ -22,9 +25,11 @@ const WOUND_UNKNOWN_ICON = preload("uid://bftmwicr7g3sm")
 const WOUND_ANY_ICON = preload("uid://d3ahgtumc0sa")
 
 const CHARACTER_ROW_SCENE = preload("res://ui/character_row_ui.tscn")
+const PROMPT = preload("uid://bw8jr3yk4gd46")
 
 var current_character: Character
 var all_characters: Array[Character]
+var prompts: Array[Prompt]
 
 @onready var player_name_label: Label = %PlayerNameLabel
 @onready var clan_color_image: TextureRect = %ClanColorImage
@@ -57,8 +62,36 @@ func _ready() -> void:
 
 
 func refresh() -> void:
+	if not prompts.is_empty():
+		prompts.front().visible = true
 	for character: CharacterRowUI in game_characters_list.get_children():
 		character.refresh()
+
+
+func add_knife_action_prompt() -> void:
+	var prompt := PROMPT.instantiate() as Prompt
+	prompt.knife_action(all_characters)
+	prompt.request_pass_knife.connect(func(target: Character) -> void: request_pass_dagger.emit(target))
+	prompt.request_stab.connect(func(target: Character) -> void: request_stab.emit(target))
+	_add_prompt(prompt)
+
+
+func add_someone_else_was_stabbed_prompt(stabber: Character, stabbee: Character) -> void:
+	var prompt := PROMPT.instantiate() as Prompt
+	prompt.someone_else_was_stabbed(stabber, stabbee)
+	_add_prompt(prompt)
+
+
+func _add_prompt(prompt: Prompt) -> void:
+	prompt.self_character = current_character
+	prompt.request_deletion.connect(func() -> void:
+		prompts.erase(prompt)
+		prompt.queue_free()
+	)
+	prompts.append(prompt)
+	prompt.visible = false
+	add_child(prompt)
+
 
 func _view_neighbor_clue_color() -> void:
 	var self_index := game_characters_list.get_children().find_custom(

@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://bw8jr3yk4gd46"]
+
+[ext_resource type="Script" uid="uid://dj3iyqoodlubq" path="res://ui/player_views/prompt.gd" id="1_xsgba"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qk2o7"]
+bg_color = Color(0.1882353, 0.1882353, 0.1882353, 1)
+
+[node name="Prompt" type="Control" unique_id=1940794416]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xsgba")
+
+[node name="PromptBody" type="MarginContainer" parent="." unique_id=2054462063]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 100
+
+[node name="Panel" type="Panel" parent="PromptBody" unique_id=616042045]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qk2o7")
+
+[node name="MarginContainer" type="MarginContainer" parent="PromptBody/Panel" unique_id=275333537]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 50
+
+[node name="PromptElements" type="VBoxContainer" parent="PromptBody/Panel/MarginContainer" unique_id=589923909]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="PromptBody/Panel/MarginContainer/PromptElements" unique_id=557114914]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 48
+text = "Prompt Title"
+horizontal_alignment = 1
+
+[node name="DetailsLabel" type="Label" parent="PromptBody/Panel/MarginContainer/PromptElements" unique_id=282146782]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 24
+text = "Details about this prompt"
+horizontal_alignment = 1
+
+[node name="ConfirmButton" type="Button" parent="PromptBody/Panel/MarginContainer/PromptElements" unique_id=719240479]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 48
+text = "So be it"
+
+[node name="ShowHideButton" type="Button" parent="." unique_id=550759186]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.93
+anchor_right = 0.5
+anchor_bottom = 0.93
+offset_left = -66.5
+offset_top = -85.0
+offset_right = 66.5
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 56
+text = "Hide"

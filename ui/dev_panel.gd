@@ -33,7 +33,7 @@ func _start_new_game() -> void:
 	# Game owns gameplay state; the panel only rebuilds its presentation.
 	for i in _characters.size():
 		var character := _characters[i]
-		var view: PlayerView = PLAYER_VIEW.instantiate()
+		var view := PLAYER_VIEW.instantiate() as PlayerView
 		view.current_character = character
 		view.all_characters = _characters
 		add_child(view)

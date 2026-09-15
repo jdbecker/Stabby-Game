@@ -18,6 +18,8 @@ var clan: CharacterStats.Clan: get = _get_clan
 var _stats: CharacterStats
 var ability_cards: Array[AbilityCard] = []
 var has_knife := false
+var protector: Character
+var is_protected: bool: get = _is_protected
 
 
 func _init(character_stats: CharacterStats) -> void:
@@ -153,3 +155,7 @@ func has_true_curse() -> bool:
 
 func has_false_curse() -> bool:
 	return ability_cards.any(func(card: AbilityCard): return card is AbilityCard.FalseCurse)
+
+
+func _is_protected() -> bool:
+	return has_shield() and protector.wound_count() < 3

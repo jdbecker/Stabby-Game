@@ -85,6 +85,7 @@ class GuardianAbility:
 		if context == null or context.target == null:
 			push_error("Guardian requires a target to give a Shield to")
 			return
+		context.target.protector = actor
 		var existing_shielded_players: Array[Character] = game.characters.filter(func(character: Character): return character.has_shield())
 		if actor.has_sword():
 			var shield := AbilityCard.Shield.new(actor.get_sword().color)
