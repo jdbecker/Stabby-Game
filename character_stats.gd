@@ -6,6 +6,20 @@ enum Clan {UNKNOWN, BLUE, RED, PURPLE}
 enum Rank {INQUISITOR, ELDER, ASSASSIN, HARLEQUIN, ALCHEMIST, MENTALIST, GUARDIAN, BERSERKER, MAGE, COURTESAN}
 enum Wound {UNKNOWN, BLUE, RED, RANK, ANY}
 
+const WOUND_BLUE_ICON = preload("uid://dgilhq7wk48f4")
+const WOUND_RED_ICON = preload("uid://da2qqjuydttxq")
+const WOUND_UNKNOWN_ICON = preload("uid://bftmwicr7g3sm")
+const WOUND_RANK_1_ICON = preload("uid://cx7lt7jfdi23g")
+const WOUND_RANK_2_ICON = preload("uid://c8j4wbiqowyr6")
+const WOUND_RANK_3_ICON = preload("uid://cifcdkojfe0il")
+const WOUND_RANK_4_ICON = preload("uid://cei80pbnqhbjj")
+const WOUND_RANK_5_ICON = preload("uid://cwgd504eivpbd")
+const WOUND_RANK_6_ICON = preload("uid://dfdio7ogfbcj8")
+const WOUND_RANK_7_ICON = preload("uid://cowgnrfx3h8y1")
+const WOUND_RANK_8_ICON = preload("uid://bpdaxmxf4l0f7")
+const WOUND_RANK_9_ICON = preload("uid://dxxantue436gn")
+const WOUND_RANKINQUISITOR_ICON = preload("uid://b4v2eumb7p7tp")
+
 @export var rank: Rank
 @export var clan: Clan
 var wounds: Array[Wound] : get = _get_wounds
@@ -61,3 +75,29 @@ func _get_ability_description() -> String:
 		Rank.COURTESAN: return "You may give a [color=dark_blue]Fan[/color] to a player. (Players cannot intervene for players with a [color=dark_blue]Fan[/color].)"
 		_: push_error("Ability description not available for Rank: %s" % rank)
 	return ""
+
+
+static func get_affiliation_image(wound_type: Wound) -> Resource:
+	match wound_type:
+		Wound.UNKNOWN: return WOUND_UNKNOWN_ICON
+		Wound.RED: return WOUND_RED_ICON
+		Wound.BLUE: return WOUND_BLUE_ICON
+		Wound.RANK: push_error("Use _get_rank_image for rank wounds!")
+		_: push_error("Wound type %s doesn't have an image" % wound_type)
+	return
+
+
+static func get_rank_image(rank_type: Rank) -> Resource:
+	match rank_type:
+		Rank.ELDER: return WOUND_RANK_1_ICON
+		Rank.ASSASSIN: return WOUND_RANK_2_ICON
+		Rank.HARLEQUIN: return WOUND_RANK_3_ICON
+		Rank.ALCHEMIST: return WOUND_RANK_4_ICON
+		Rank.MENTALIST: return WOUND_RANK_5_ICON
+		Rank.GUARDIAN: return WOUND_RANK_6_ICON
+		Rank.BERSERKER: return WOUND_RANK_7_ICON
+		Rank.MAGE: return WOUND_RANK_8_ICON
+		Rank.COURTESAN: return WOUND_RANK_9_ICON
+		Rank.INQUISITOR: return WOUND_RANKINQUISITOR_ICON
+		_: push_error("Rank type %s doesn't have an image" % rank_type)
+	return

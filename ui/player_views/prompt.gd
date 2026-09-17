@@ -6,6 +6,7 @@ signal request_stab(stabbee: Character)
 signal request_pass_knife(recipient: Character)
 
 const KNIFE_PROMPT_ROW = preload("uid://daprn3q5pgqys")
+const WOUND_PROMPT_ROW = preload("uid://dgkoag5ccp6ap")
 
 var self_character: Character
 
@@ -38,6 +39,21 @@ func knife_action(characters: Array[Character]) -> void:
 				request_pass_knife.emit(character)
 			)
 			prompt_elements.add_child(knife_prompt_row)
+
+
+func choose_wound(wound_context: WoundContext) -> void:
+	title_label.text = "You've been stabbed!"
+	details_label.text = "Choose a wound to take."
+	for wound in self_character:
+		var wound_prompt_row := WOUND_PROMPT_ROW.instantiate() as WoundPromptRow
+		wound_prompt_row.wound_type = wound
+		wound_prompt_row.character_rank = self_character.rank
+		wound_prompt_row.selected.connect(func() -> void:
+			wound_context.wound_type = wound
+			self_character.take_wound(wound_context)
+			request_deletion.emit()
+		)
+		prompt_elements.add_child(wound_prompt_row)
 
 
 func someone_else_was_stabbed(stabber: Character, stabbee: Character) -> void:

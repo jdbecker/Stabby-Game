@@ -97,11 +97,12 @@ func start_new_game(player_count: int) -> void:
 		var character := characters[i]
 		character.name = "Player%s" % i
 	
-	knife_holder = characters[randi() % characters.size()]
-	knife_holder.has_knife = true
 	if _dev_panel != null:
 		_dev_panel.setup(characters, knife_holder)
 	_update_dev_panel()
+	
+	knife_holder = characters[randi() % characters.size()]
+	set_knife_holder(knife_holder)
 
 
 func activate_ability(character: Character, context: AbilityContext = null) -> void:
