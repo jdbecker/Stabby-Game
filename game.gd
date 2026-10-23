@@ -120,8 +120,6 @@ func _ready() -> void:
 	dev_panel.clear_wounds_requested.connect(clear_wounds)
 	
 	start_new_game(7)
-	
-	dev_panel.setup(characters)
 
 
 func _on_add_wound_requested(character: Character, wound_type: CharacterStats.Wound) -> void:

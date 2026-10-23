@@ -28,6 +28,7 @@ func _ready() -> void:
 func _start_new_game() -> void:
 	for child in _player_list.get_children():
 		child.queue_free()
+	_views.clear()
 
 	# Game owns gameplay state; the panel only rebuilds its presentation.
 	for i in _characters.size():
