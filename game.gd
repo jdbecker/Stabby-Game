@@ -64,14 +64,11 @@ const BLUE_CHARACTERS: Array[CharacterStats] = [
 	BLUE_COURTESAN,
 ]
 
+@onready var dev_panel: DevPanel = $DevPanel
+
 var characters: Array[Character]
 var knife_holder: Character
 var last_wounded_character: Character
-var _dev_panel: DevPanel
-
-
-func _init(player_count: int = 7) -> void:
-	start_new_game(player_count)
 
 
 func start_new_game(player_count: int) -> void:
@@ -97,8 +94,7 @@ func start_new_game(player_count: int) -> void:
 		var character := characters[i]
 		character.name = "Player%s" % i
 	
-	if _dev_panel != null:
-		_dev_panel.setup(characters, knife_holder)
+	dev_panel.setup(characters)
 	_update_dev_panel()
 	
 	knife_holder = characters[randi() % characters.size()]
@@ -116,16 +112,16 @@ func activate_ability(character: Character, context: AbilityContext = null) -> v
 
 
 func _ready() -> void:
-	_dev_panel = get_node_or_null("DevPanel")
-	if _dev_panel == null:
-		return
-	_dev_panel.new_game_requested.connect(start_new_game)
-	_dev_panel.give_dagger_requested.connect(set_knife_holder)
-	_dev_panel.add_wound_requested.connect(_on_add_wound_requested)
-	_dev_panel.remove_wound_requested.connect(remove_wound)
-	_dev_panel.capture_requested.connect(capture)
-	_dev_panel.clear_wounds_requested.connect(clear_wounds)
-	_dev_panel.setup(characters, knife_holder)
+	dev_panel.new_game_requested.connect(start_new_game)
+	dev_panel.pass_knife_requested.connect(set_knife_holder)
+	dev_panel.add_wound_requested.connect(_on_add_wound_requested)
+	dev_panel.remove_wound_requested.connect(remove_wound)
+	dev_panel.capture_requested.connect(capture)
+	dev_panel.clear_wounds_requested.connect(clear_wounds)
+	
+	start_new_game(7)
+	
+	dev_panel.setup(characters)
 
 
 func _on_add_wound_requested(character: Character, wound_type: CharacterStats.Wound) -> void:
@@ -209,8 +205,8 @@ func give_ability_card(card: AbilityCard, character: Character) -> void:
 
 
 func _update_dev_panel() -> void:
-	if _dev_panel != null:
-		_dev_panel.update_state(knife_holder)
+	if dev_panel != null:
+		dev_panel.update_state()
 
 
 func clan_leader(clan: CharacterStats.Clan) -> Character:

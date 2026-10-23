@@ -1,7 +1,7 @@
 class_name DevPanel
 extends Control
 
-signal give_dagger_requested(character: Character)
+signal pass_knife_requested(character: Character)
 signal add_wound_requested(character: Character, wound_type: CharacterStats.Wound)
 signal remove_wound_requested(character: Character, wound_type: CharacterStats.Wound)
 signal capture_requested(character: Character)
@@ -18,7 +18,6 @@ const PLAYER_VIEW = preload("uid://87n3mryosmpd")
 @onready var _player_list: VBoxContainer = %PlayerList
 
 var _characters: Array[Character]
-var _knife_holder: Character
 var _views: Array[PlayerView]
 
 
@@ -39,31 +38,35 @@ func _start_new_game() -> void:
 		add_child(view)
 		view.hide()
 		_views.append(view)
+		
+		view.pass_knife_requested.connect(pass_knife_requested.emit)
+		
 		var row: PlayerRow = PLAYER_ROW.instantiate()
 		_player_list.add_child(row)
 		row.setup(i, character)
-		row.give_dagger_requested.connect(give_dagger_requested.emit)
+		row.pass_knife_requested.connect(pass_knife_requested.emit)
 		row.add_wound_requested.connect(add_wound_requested.emit)
 		row.remove_wound_requested.connect(remove_wound_requested.emit)
 		row.capture_requested.connect(capture_requested.emit)
 		row.clear_wounds_requested.connect(clear_wounds_requested.emit)
 		row.view_requested.connect(func(_character) -> void: view.visible = true)
-	update_state(_knife_holder)
+	update_state()
 
 
-func setup(characters: Array[Character], knife_holder: Character) -> void:
+func setup(characters: Array[Character]) -> void:
 	_characters = characters
-	_knife_holder = knife_holder
 	_start_new_game()
 
 
-func update_state(knife_holder: Character) -> void:
-	_knife_holder = knife_holder
+func update_state() -> void:
 	for row: PlayerRow in _player_list.get_children():
-		row.refresh(knife_holder)
-	var holder_index := _characters.find(knife_holder)
-	_summary.text = "Dagger: P%d %s    |    %d players" % [
-		holder_index, str(knife_holder), _characters.size()
+		row.refresh()
+	var knife_holders := _characters.filter(func(c: Character) -> bool: return c.has_knife)
+	if not knife_holders:
+		return # game state not yet done initializing
+	var knife_holder := knife_holders.front() as Character
+	_summary.text = "Dagger: %s %s    |    %d players" % [
+		knife_holder.name, knife_holder, _characters.size()
 	]
 	for view: PlayerView in _views:
 		view.refresh()
