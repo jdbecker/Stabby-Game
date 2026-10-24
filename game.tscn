@@ -1,9 +1,7 @@
 [gd_scene format=3 uid="uid://cip5a8em0dw4d"]
 
 [ext_resource type="Script" uid="uid://dtu3lewel4s6o" path="res://game.gd" id="1_game"]
-[ext_resource type="PackedScene" uid="uid://dxne70xfkuepv" path="res://ui/dev_panel.tscn" id="2_dev_panel"]
 
 [node name="Game" type="Node" unique_id=2103089058]
 script = ExtResource("1_game")
-
-[node name="DevPanel" parent="." unique_id=288138371 instance=ExtResource("2_dev_panel")]
+ui_enabled = true

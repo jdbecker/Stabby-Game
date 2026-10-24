@@ -7,6 +7,51 @@ const UNKNOWN := CharacterStats.Wound.UNKNOWN
 const ANY := CharacterStats.Wound.ANY
 
 
+func test_game_initializes_without_ui() -> void:
+	var game := Game.new(6)
+	assert_false(game.is_inside_tree())
+	assert_null(game.get_node_or_null("DevPanel"))
+	assert_eq(game.characters.size(), 6)
+	assert_not_null(game.knife_holder)
+	assert_true(game.knife_holder.has_knife)
+
+	var added_game := Game.new(6)
+	add_child_autofree(added_game)
+	assert_null(added_game.get_node_or_null("DevPanel"))
+
+
+func test_game_scene_rebuilds_panel_for_new_game() -> void:
+	var game := load("res://game.tscn").instantiate() as Game
+	add_child_autofree(game)
+	await get_tree().process_frame
+
+	var panel := game.dev_panel
+	var player_list := panel.get_node("%PlayerList") as VBoxContainer
+	var first_panel_id := panel.get_instance_id()
+	assert_eq(_dev_panel_count(game), 1)
+	assert_eq(player_list.get_child_count(), 7)
+
+	game.start_new_game(8)
+	panel = game.dev_panel
+	assert_ne(panel.get_instance_id(), first_panel_id)
+	assert_eq(_dev_panel_count(game), 1)
+	assert_eq(panel.get_node("%PlayerList").get_child_count(), 8)
+	assert_eq(panel.get_children().filter(func(child: Node): return child is PlayerView).size(), 8)
+
+	await get_tree().process_frame
+	var second_panel_id := panel.get_instance_id()
+	game.start_new_game(6)
+	panel = game.dev_panel
+	assert_ne(panel.get_instance_id(), second_panel_id)
+	assert_eq(_dev_panel_count(game), 1)
+	assert_eq(panel.get_node("%PlayerList").get_child_count(), 6)
+	assert_eq(panel.get_children().filter(func(child: Node): return child is PlayerView).size(), 6)
+
+
+func _dev_panel_count(game: Game) -> int:
+	return game.get_children().filter(func(child: Node): return child is DevPanel).size()
+
+
 func _wound(type: CharacterStats.Wound) -> WoundContext:
 	var wound := WoundContext.new(null)
 	wound.wound_type = type

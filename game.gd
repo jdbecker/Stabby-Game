@@ -64,17 +64,26 @@ const BLUE_CHARACTERS: Array[CharacterStats] = [
 	BLUE_COURTESAN,
 ]
 
-@onready var dev_panel: DevPanel = $DevPanel
+const DEV_PANEL_SCENE := preload("res://ui/dev_panel.tscn")
 
+@export var ui_enabled := false
+
+var dev_panel: DevPanel
 var characters: Array[Character]
 var knife_holder: Character
 var last_wounded_character: Character
+
+
+func _init(player_count: int = 7) -> void:
+	start_new_game(player_count)
 
 
 func start_new_game(player_count: int) -> void:
 	if player_count < 6 or 12 < player_count:
 		push_error("Invalid player_count: %s. Must be between 6 and 12 players!" % player_count)
 		return
+	if ui_enabled:
+		_remove_dev_panel()
 	characters = []
 	var inquisitor := player_count % 2
 	var reds_and_blues := floori((player_count - inquisitor) / 2.0)
@@ -94,11 +103,10 @@ func start_new_game(player_count: int) -> void:
 		var character := characters[i]
 		character.name = "Player%s" % i
 	
-	dev_panel.setup(characters)
-	_update_dev_panel()
-	
 	knife_holder = characters[randi() % characters.size()]
 	set_knife_holder(knife_holder)
+	if ui_enabled and is_node_ready():
+		_create_dev_panel()
 
 
 func activate_ability(character: Character, context: AbilityContext = null) -> void:
@@ -112,14 +120,28 @@ func activate_ability(character: Character, context: AbilityContext = null) -> v
 
 
 func _ready() -> void:
+	if ui_enabled:
+		_create_dev_panel()
+
+
+func _create_dev_panel() -> void:
+	dev_panel = DEV_PANEL_SCENE.instantiate() as DevPanel
+	add_child(dev_panel)
 	dev_panel.new_game_requested.connect(start_new_game)
 	dev_panel.pass_knife_requested.connect(set_knife_holder)
 	dev_panel.add_wound_requested.connect(_on_add_wound_requested)
 	dev_panel.remove_wound_requested.connect(remove_wound)
 	dev_panel.capture_requested.connect(capture)
 	dev_panel.clear_wounds_requested.connect(clear_wounds)
-	
-	start_new_game(7)
+	dev_panel.setup(characters)
+
+
+func _remove_dev_panel() -> void:
+	if dev_panel == null:
+		return
+	remove_child(dev_panel)
+	dev_panel.queue_free()
+	dev_panel = null
 
 
 func _on_add_wound_requested(character: Character, wound_type: CharacterStats.Wound) -> void:
