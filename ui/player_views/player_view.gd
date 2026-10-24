@@ -1,8 +1,8 @@
 class_name PlayerView
 extends Control
 
-signal request_stab(target: Character)
-signal request_pass_dagger(target: Character)
+signal stab_requested(target: Character)
+signal pass_knife_requested(target: Character)
 
 const CLAN_BLUE_ICON = preload("uid://crs81muwa6whu")
 const CLAN_RED_ICON = preload("uid://bufdewe0mkvel")
@@ -62,6 +62,8 @@ func _ready() -> void:
 
 
 func refresh() -> void:
+	if prompts.is_empty() and current_character.has_knife:
+		add_knife_action_prompt()
 	if not prompts.is_empty():
 		prompts.front().visible = true
 	for character: CharacterRowUI in game_characters_list.get_children():
@@ -70,16 +72,16 @@ func refresh() -> void:
 
 func add_knife_action_prompt() -> void:
 	var prompt := PROMPT.instantiate() as Prompt
-	prompt.knife_action(all_characters)
-	prompt.request_pass_knife.connect(func(target: Character) -> void: request_pass_dagger.emit(target))
-	prompt.request_stab.connect(func(target: Character) -> void: request_stab.emit(target))
 	_add_prompt(prompt)
+	prompt.knife_action(all_characters)
+	prompt.pass_knife_requested.connect(func(target: Character) -> void: pass_knife_requested.emit(target))
+	prompt.stab_requested.connect(func(target: Character) -> void: stab_requested.emit(target))
 
 
 func add_someone_else_was_stabbed_prompt(stabber: Character, stabbee: Character) -> void:
 	var prompt := PROMPT.instantiate() as Prompt
-	prompt.someone_else_was_stabbed(stabber, stabbee)
 	_add_prompt(prompt)
+	prompt.someone_else_was_stabbed(stabber, stabbee)
 
 
 func _add_prompt(prompt: Prompt) -> void:

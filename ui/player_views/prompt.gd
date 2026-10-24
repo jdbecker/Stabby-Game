@@ -2,8 +2,8 @@ class_name Prompt
 extends Control
 
 signal request_deletion
-signal request_stab(stabbee: Character)
-signal request_pass_knife(recipient: Character)
+signal stab_requested(stabbee: Character)
+signal pass_knife_requested(recipient: Character)
 
 const KNIFE_PROMPT_ROW = preload("uid://daprn3q5pgqys")
 const WOUND_PROMPT_ROW = preload("uid://dgkoag5ccp6ap")
@@ -20,10 +20,12 @@ var self_character: Character
 
 func _ready() -> void:
 	show_hide_button.pressed.connect(_toggle_visibility)
-	confirm_button.pressed.emit(request_deletion)
+	confirm_button.pressed.connect(request_deletion.emit)
 
 
 func knife_action(characters: Array[Character]) -> void:
+	if not is_node_ready():
+		await ready
 	title_label.text = "You have the knife."
 	details_label.text = "What would you like to do with it?"
 	for character in characters:
@@ -32,11 +34,11 @@ func knife_action(characters: Array[Character]) -> void:
 			knife_prompt_row.character = character
 			knife_prompt_row.stab_requested.connect(func() -> void:
 				request_deletion.emit()
-				request_stab.emit(character)
+				stab_requested.emit(character)
 			)
 			knife_prompt_row.pass_requested.connect(func() -> void: 
 				request_deletion.emit()
-				request_pass_knife.emit(character)
+				pass_knife_requested.emit(character)
 			)
 			prompt_elements.add_child(knife_prompt_row)
 
