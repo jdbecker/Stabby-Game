@@ -2,6 +2,7 @@ class_name DevPanel
 extends Control
 
 signal pass_knife_requested(character: Character)
+signal stab_requested(stabber: Character, target: Character)
 signal add_wound_requested(character: Character, wound_type: CharacterStats.Wound)
 signal remove_wound_requested(character: Character, wound_type: CharacterStats.Wound)
 signal capture_requested(character: Character)
@@ -18,7 +19,7 @@ const PLAYER_VIEW = preload("uid://87n3mryosmpd")
 @onready var _player_list: VBoxContainer = %PlayerList
 
 var _characters: Array[Character]
-var _views: Array[PlayerView]
+var _views: Dictionary[Character, PlayerView]
 
 
 func _ready() -> void:
@@ -29,7 +30,7 @@ func _start_new_game() -> void:
 	for child in _player_list.get_children():
 		_player_list.remove_child(child)
 		child.queue_free()
-	for view: PlayerView in _views:
+	for view: PlayerView in _views.values():
 		remove_child(view)
 		view.queue_free()
 	_views.clear()
@@ -42,9 +43,10 @@ func _start_new_game() -> void:
 		view.all_characters = _characters
 		add_child(view)
 		view.hide()
-		_views.append(view)
+		_views[character] = view
 		
 		view.pass_knife_requested.connect(pass_knife_requested.emit)
+		view.stab_requested.connect(func(target: Character): stab_requested.emit(character, target))
 		
 		var row: PlayerRow = PLAYER_ROW.instantiate()
 		_player_list.add_child(row)
@@ -73,5 +75,5 @@ func update_state() -> void:
 	_summary.text = "Dagger: %s %s    |    %d players" % [
 		knife_holder.name, knife_holder, _characters.size()
 	]
-	for view: PlayerView in _views:
+	for view: PlayerView in _views.values():
 		view.refresh()

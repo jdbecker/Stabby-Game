@@ -4,8 +4,10 @@ extends Control
 signal request_deletion
 signal stab_requested(stabbee: Character)
 signal pass_knife_requested(recipient: Character)
+signal intervention_accepted(intervener: Character)
 
 const KNIFE_PROMPT_ROW = preload("uid://daprn3q5pgqys")
+const INTERVENTION_PROMPT_ROW = preload("uid://dvdu55vtlxe7l")
 const WOUND_PROMPT_ROW = preload("uid://dgkoag5ccp6ap")
 
 var self_character: Character
@@ -43,7 +45,34 @@ func knife_action(characters: Array[Character]) -> void:
 			prompt_elements.add_child(knife_prompt_row)
 
 
+func choose_intervener(attack_context: AttackContext) -> void:
+	if not is_node_ready():
+		await ready
+	title_label.text = "%s is trying to stab you!" % attack_context.attacker.name
+	details_label.text = "Will anyone intervene for you?"
+	for character in attack_context.might_intervene:
+		var intervention_prompt_row := INTERVENTION_PROMPT_ROW.instantiate() as InterventionPromptRow
+		prompt_elements.add_child(intervention_prompt_row)
+		intervention_prompt_row.target_view = true
+		intervention_prompt_row.character_name = character.name
+		intervention_prompt_row.accept_button.pressed.connect(func() -> void: 
+			request_deletion.emit()
+			intervention_accepted.emit(character)
+		)
+	var hseparator := HSeparator.new()
+	prompt_elements.add_child(hseparator)
+	var cannot_intervene_label := Label.new()
+	prompt_elements.add_child(cannot_intervene_label)
+	cannot_intervene_label.text = "Cannot intervene"
+	for character in attack_context.cant_intervene:
+		var cant_intervene_character_label := Label.new()
+		prompt_elements.add_child(cant_intervene_character_label)
+		cant_intervene_character_label.text = character.name
+
+
 func choose_wound(wound_context: WoundContext) -> void:
+	if not is_node_ready():
+		await ready
 	title_label.text = "You've been stabbed!"
 	details_label.text = "Choose a wound to take."
 	for wound in self_character:
@@ -59,6 +88,8 @@ func choose_wound(wound_context: WoundContext) -> void:
 
 
 func someone_else_was_stabbed(stabber: Character, stabbee: Character) -> void:
+	if not is_node_ready():
+		await ready
 	title_label.text = "%s stabbed %s." % [stabber.name, stabbee.name]
 	details_label.text = "%s took a %s wound." % [stabbee.name, stabbee.last_wound]
 	confirm_button.visible = true
