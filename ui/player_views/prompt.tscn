@@ -57,6 +57,7 @@ size_flags_vertical = 0
 theme_override_font_sizes/font_size = 48
 text = "Prompt Title"
 horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="DetailsLabel" type="Label" parent="PromptBody/Panel/MarginContainer/PromptElements" unique_id=282146782]
 unique_name_in_owner = true

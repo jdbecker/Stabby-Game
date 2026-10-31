@@ -65,6 +65,15 @@ func setup(characters: Array[Character]) -> void:
 	_start_new_game()
 
 
+func add_intervention_prompt(attack_context: AttackContext) -> void:
+	var target_view := _views.get(attack_context.target) as PlayerView
+	if target_view == null:
+		push_error("Can't find player view for intervention target %s!" % attack_context.target)
+		return
+	target_view.add_choose_intervener_prompt(attack_context)
+	target_view.refresh()
+
+
 func update_state() -> void:
 	for row: PlayerRow in _player_list.get_children():
 		row.refresh()

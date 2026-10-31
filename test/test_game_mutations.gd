@@ -48,6 +48,32 @@ func test_game_scene_rebuilds_panel_for_new_game() -> void:
 	assert_eq(panel.get_children().filter(func(child: Node): return child is PlayerView).size(), 6)
 
 
+func test_stab_request_adds_intervention_prompt_to_target_view() -> void:
+	var game := load("res://game.tscn").instantiate() as Game
+	add_child_autofree(game)
+	await get_tree().process_frame
+
+	var stabber := game.knife_holder
+	var target: Character = game.get_other_characters(stabber).front()
+	var stabber_view := game.dev_panel._views[stabber] as PlayerView
+	var target_view := game.dev_panel._views[target] as PlayerView
+	var knife_prompt: Prompt = stabber_view.prompts.front()
+	var target_row: KnifePromptRow = knife_prompt.prompt_elements.get_children().filter(func(node: Node) -> bool:
+		var row := node as KnifePromptRow
+		return row != null and row.character == target
+	).front()
+	assert_not_null(target_row)
+	if target_row == null:
+		return
+
+	target_row.stab_requested.emit()
+
+	assert_eq(target_view.prompts.size(), 1)
+	assert_true(target_view.prompts.front().visible)
+	assert_eq(target_view.prompts.front().title_label.text, "%s is trying to stab you!" % stabber.name)
+	assert_true(stabber_view.prompts.is_empty())
+
+
 func _dev_panel_count(game: Game) -> int:
 	return game.get_children().filter(func(child: Node): return child is DevPanel).size()
 

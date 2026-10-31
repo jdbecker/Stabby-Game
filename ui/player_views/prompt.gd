@@ -38,7 +38,7 @@ func knife_action(characters: Array[Character]) -> void:
 				request_deletion.emit()
 				stab_requested.emit(character)
 			)
-			knife_prompt_row.pass_requested.connect(func() -> void: 
+			knife_prompt_row.pass_requested.connect(func() -> void:
 				request_deletion.emit()
 				pass_knife_requested.emit(character)
 			)
@@ -52,10 +52,10 @@ func choose_intervener(attack_context: AttackContext) -> void:
 	details_label.text = "Will anyone intervene for you?"
 	for character in attack_context.might_intervene:
 		var intervention_prompt_row := INTERVENTION_PROMPT_ROW.instantiate() as InterventionPromptRow
-		prompt_elements.add_child(intervention_prompt_row)
 		intervention_prompt_row.target_view = true
 		intervention_prompt_row.character_name = character.name
-		intervention_prompt_row.accept_button.pressed.connect(func() -> void: 
+		prompt_elements.add_child(intervention_prompt_row)
+		intervention_prompt_row.accept_button.pressed.connect(func() -> void:
 			request_deletion.emit()
 			intervention_accepted.emit(character)
 		)
