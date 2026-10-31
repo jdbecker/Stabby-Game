@@ -128,12 +128,18 @@ func _create_dev_panel() -> void:
 	dev_panel = DEV_PANEL_SCENE.instantiate() as DevPanel
 	add_child(dev_panel)
 	dev_panel.new_game_requested.connect(start_new_game)
+	dev_panel.stab_requested.connect(_on_stab_requested)
 	dev_panel.pass_knife_requested.connect(set_knife_holder)
 	dev_panel.add_wound_requested.connect(_on_add_wound_requested)
 	dev_panel.remove_wound_requested.connect(remove_wound)
 	dev_panel.capture_requested.connect(capture)
 	dev_panel.clear_wounds_requested.connect(clear_wounds)
 	dev_panel.setup(characters)
+
+
+func _on_stab_requested(stabber: Character, target: Character) -> void:
+	var attack_context := AttackContext.new(stabber, target, get_other_characters(stabber, target))
+	dev_panel.add_intervention_prompt(attack_context)
 
 
 func _remove_dev_panel() -> void:

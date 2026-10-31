@@ -3,6 +3,7 @@ extends Control
 
 signal stab_requested(target: Character)
 signal pass_knife_requested(target: Character)
+signal intervention_accepted(intervener: Character)
 
 const CLAN_BLUE_ICON = preload("uid://crs81muwa6whu")
 const CLAN_RED_ICON = preload("uid://bufdewe0mkvel")
@@ -76,6 +77,13 @@ func add_knife_action_prompt() -> void:
 	prompt.knife_action(all_characters)
 	prompt.pass_knife_requested.connect(func(target: Character) -> void: pass_knife_requested.emit(target))
 	prompt.stab_requested.connect(func(target: Character) -> void: stab_requested.emit(target))
+
+
+func add_choose_intervener_prompt(attack_context: AttackContext) -> void:
+	var prompt := PROMPT.instantiate() as Prompt
+	_add_prompt(prompt)
+	prompt.choose_intervener(attack_context)
+	prompt.intervention_accepted.connect(intervention_accepted.emit)
 
 
 func add_someone_else_was_stabbed_prompt(stabber: Character, stabbee: Character) -> void:

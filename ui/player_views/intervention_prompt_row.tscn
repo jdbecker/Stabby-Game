@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://dvdu55vtlxe7l"]
+
+[ext_resource type="Script" uid="uid://d3ovpax4hlohb" path="res://ui/player_views/intervention_prompt_row.gd" id="1_j4ifw"]
+
+[node name="InterventionPromptRow" type="HBoxContainer" unique_id=1801091535]
+script = ExtResource("1_j4ifw")
+
+[node name="NameLabel" type="Label" parent="." unique_id=1109368421]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Player1"
+horizontal_alignment = 1
+clip_text = true
+
+[node name="AcceptButton" type="Button" parent="." unique_id=534957989]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 36
+disabled = true
+text = "Accept"
+
+[node name="3WaySwitch" type="HBoxContainer" parent="." unique_id=1647964053]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OfferButton" type="Button" parent="3WaySwitch" unique_id=243339156]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+toggle_mode = true
+text = "Offer"
+
+[node name="ThinkingButton" type="Button" parent="3WaySwitch" unique_id=1622690773]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+toggle_mode = true
+button_pressed = true
+text = "Thinking"
+
+[node name="RejectButton" type="Button" parent="3WaySwitch" unique_id=1425987526]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+toggle_mode = true
+text = "Reject"
